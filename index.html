@@ -1,40 +1,85 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <title>Portfolio</title>
 
 <style>
 
 body{
-    background:white;
     margin:0;
+    background:white;
+    height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
-    height:100vh;
-    font-family:Arial;
 }
 
-svg{
-    width:500px;
+#container{
+    position:relative;
+    width:700px;
 }
 
-.branche{
-    fill:black;
-    cursor:pointer;
-    transition:0.2s;
+#etoile{
+    width:100%;
+    display:block;
 }
 
-.branche:hover{
-    fill:red;
-}
+/* Décommente la ligne border pour visualiser les zones */
 
-#label{
+/* PORTFOLIO */
+#portfolio{
     position:absolute;
-    font-size:32px;
-    pointer-events:none;
+    top:80px;
+    left:120px;
+    width:170px;
+    height:170px;
+    /* border:1px solid red; */
+}
+
+/* CV */
+#cv{
+    position:absolute;
+    top:0px;
+    left:275px;
+    width:150px;
+    height:200px;
+    /* border:1px solid red; */
+}
+
+/* VOLUME */
+#volume{
+    position:absolute;
+    top:80px;
+    right:120px;
+    width:170px;
+    height:170px;
+    /* border:1px solid red; */
+}
+
+/* ZINE */
+#zine{
+    position:absolute;
+    bottom:80px;
+    right:120px;
+    width:170px;
+    height:170px;
+    /* border:1px solid red; */
+}
+
+/* DESSIN */
+#dessin{
+    position:absolute;
+    bottom:80px;
+    left:120px;
+    width:170px;
+    height:170px;
+    /* border:1px solid red; */
+}
+
+.zone{
+    cursor:pointer;
 }
 
 </style>
@@ -43,43 +88,50 @@ svg{
 
 <body>
 
-<div id="label"></div>
+<div id="container">
 
-<svg viewBox="0 0 500 500">
+<img id="etoile" src="etoile.png">
 
-<polygon class="branche"
-points="250,50 280,180 220,180"
-onmouseover="showLabel('Dessins')"
-onclick="location.href='dessins.html'"/>
+<div class="zone" id="portfolio"
+onmouseover="changeImage('etoile-portfolio.png')"
+onmouseout="resetImage()"
+onclick="location.href='portfolio.html'">
+</div>
 
-<polygon class="branche"
-points="450,180 320,220 320,160"
-onmouseover="showLabel('Éditions')"
-onclick="location.href='editions.html'"/>
+<div class="zone" id="cv"
+onmouseover="changeImage('etoile-cv.png')"
+onmouseout="resetImage()"
+onclick="location.href='cv.html'">
+</div>
 
-<polygon class="branche"
-points="380,450 270,300 320,270"
-onmouseover="showLabel('Recherche')"
-onclick="location.href='recherche.html'"/>
+<div class="zone" id="volume"
+onmouseover="changeImage('etoile-volume.png')"
+onmouseout="resetImage()"
+onclick="location.href='volume.html'">
+</div>
 
-<polygon class="branche"
-points="120,450 180,270 230,300"
-onmouseover="showLabel('Projets')"
-onclick="location.href='projets.html'"/>
+<div class="zone" id="zine"
+onmouseover="changeImage('etoile-zine.png')"
+onmouseout="resetImage()"
+onclick="location.href='zine.html'">
+</div>
 
-<polygon class="branche"
-points="50,180 180,160 180,220"
-onmouseover="showLabel('Archives')"
-onclick="location.href='archives.html'"/>
+<div class="zone" id="dessin"
+onmouseover="changeImage('etoile-dessin.png')"
+onmouseout="resetImage()"
+onclick="location.href='dessin.html'">
+</div>
 
-<circle cx="250" cy="250" r="40" fill="black"/>
-
-</svg>
+</div>
 
 <script>
 
-function showLabel(text){
-document.getElementById("label").innerHTML=text;
+function changeImage(image){
+    document.getElementById("etoile").src = image;
+}
+
+function resetImage(){
+    document.getElementById("etoile").src = "etoile.png";
 }
 
 </script>

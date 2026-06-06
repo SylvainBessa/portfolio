@@ -6,62 +6,93 @@
 <title>Dessin</title>
 
 <style>
-
 body{
     margin:0;
     background:white;
     font-family:"Times New Roman", serif;
-    overflow:hidden;
+    overflow-y:auto;
+    overflow-x:hidden;
 }
 
 #retour{
-    position:absolute;
+    position:fixed;
     top:20px;
     left:20px;
     color:blue;
     text-decoration:underline;
     font-size:18px;
+    z-index:20;
 }
 
-#image-grande{
-    position:absolute;
-    top:45%;
-    left:50%;
-    transform:translate(-50%, -50%);
-    max-width:75vw;
-    max-height:68vh;
-    object-fit:contain;
-    display:none;
-    z-index:5;
+.page{
+    padding-top:90px;
+    padding-bottom:120px;
 }
 
-#menu-dessins{
-    position:absolute;
-    bottom:25px;
-    left:0;
+.serie{
+    width:100vw;
+    margin-bottom:120px;
+}
+
+.titre-serie{
+    text-align:center;
+    font-size:22px;
+    margin-bottom:25px;
+    font-weight:normal;
+}
+
+.menu-horizontal{
     width:100vw;
     overflow-x:auto;
+    overflow-y:hidden;
     white-space:nowrap;
-    padding:20px;
+    padding:25px 40px;
     box-sizing:border-box;
     border-top:1px solid black;
+    border-bottom:1px solid black;
     background:white;
-    z-index:10;
 }
 
 .miniature{
-    height:110px;
-    margin-right:20px;
+    height:260px;
+    margin-right:35px;
     cursor:pointer;
     vertical-align:middle;
     border:1px solid black;
-    transition:0.2s;
 }
 
 .miniature:hover{
-    height:150px;
+    animation:tremble 0.12s infinite;
 }
 
+@keyframes tremble{
+    0%{ transform:translate(0px, 0px) rotate(0deg); }
+    25%{ transform:translate(2px, -1px) rotate(1deg); }
+    50%{ transform:translate(-2px, 1px) rotate(-1deg); }
+    75%{ transform:translate(1px, 2px) rotate(1deg); }
+    100%{ transform:translate(-1px, -2px) rotate(0deg); }
+}
+
+#fenetre{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100vw;
+    height:100vh;
+    background:rgba(255,255,255,0.85);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:100;
+}
+
+#fenetre img{
+    max-width:90vw;
+    max-height:90vh;
+    object-fit:contain;
+    border:1px solid black;
+    background:white;
+}
 </style>
 </head>
 
@@ -69,28 +100,38 @@ body{
 
 <a id="retour" href="index.html">retour</a>
 
-<img id="image-grande" src="" alt="">
+<div class="page">
 
-<div id="menu-dessins">
+    <div class="serie">
+        <h1 class="titre-serie">série 1</h1>
 
-<img class="miniature" src="dessin-01.jpg" onclick="afficherDessin('dessin-01.jpg')">
-<img class="miniature" src="dessin-02.jpg" onclick="afficherDessin('dessin-02.jpg')">
-<img class="miniature" src="dessin-03.jpg" onclick="afficherDessin('dessin-03.jpg')">
-<img class="miniature" src="dessin-04.jpg" onclick="afficherDessin('dessin-04.jpg')">
-<img class="miniature" src="dessin-05.jpg" onclick="afficherDessin('dessin-05.jpg')">
-<img class="miniature" src="dessin-06.jpg" onclick="afficherDessin('dessin-06.jpg')">
-<img class="miniature" src="dessin-07.jpg" onclick="afficherDessin('dessin-07.jpg')">
+        <div class="menu-horizontal">
+            <img class="miniature" src="dessin-01.webp" onclick="ouvrirImage('dessin-01.webp')">
+            <img class="miniature" src="dessin-02.webp" onclick="ouvrirImage('dessin-02.webp')">
+            <img class="miniature" src="dessin-03.webp" onclick="ouvrirImage('dessin-03.webp')">
+            <img class="miniature" src="dessin-04.webp" onclick="ouvrirImage('dessin-04.webp')">
+            <img class="miniature" src="dessin-05.webp" onclick="ouvrirImage('dessin-05.webp')">
+            <img class="miniature" src="dessin-06.webp" onclick="ouvrirImage('dessin-06.webp')">
+            <img class="miniature" src="dessin-07.webp" onclick="ouvrirImage('dessin-07.webp')">
+        </div>
+    </div>
 
 </div>
 
-<script>
+<div id="fenetre" onclick="fermerImage()">
+    <img id="image-ouverte" src="" alt="" onclick="event.stopPropagation()">
+</div>
 
-function afficherDessin(image){
-    const grandeImage = document.getElementById("image-grande");
-    grandeImage.src = image;
-    grandeImage.style.display = "block";
+<script>
+function ouvrirImage(image){
+    document.getElementById("image-ouverte").src = image;
+    document.getElementById("fenetre").style.display = "flex";
 }
 
+function fermerImage(){
+    document.getElementById("fenetre").style.display = "none";
+    document.getElementById("image-ouverte").src = "";
+}
 </script>
 
 </body>

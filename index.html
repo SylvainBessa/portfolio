@@ -2,8 +2,17 @@
 <html lang="fr">
 
 <head>
+
 <meta charset="UTF-8">
 <title>Portfolio</title>
+
+<!-- Préchargement des images -->
+
+<link rel="preload" href="etoile-portfolio.webp" as="image">
+<link rel="preload" href="etoile-cv.webp" as="image">
+<link rel="preload" href="etoile-volume.webp" as="image">
+<link rel="preload" href="etoile-zine.webp" as="image">
+<link rel="preload" href="etoile-dessin.webp" as="image">
 
 <style>
 
@@ -26,16 +35,18 @@ body{
     display:block;
 }
 
+/* Pour visualiser les zones :
+.zone{
+    border:2px solid red;
+}
+*/
+
 .zone{
     position:absolute;
     cursor:pointer;
-
-    /* POUR AJUSTER LES ZONES :
-    border:2px solid red;
-    */
 }
 
-/* PORTFOLIO - branche haut gauche */
+/* PORTFOLIO */
 #portfolio{
     top:260px;
     left:240px;
@@ -43,7 +54,7 @@ body{
     height:160px;
 }
 
-/* CV - branche du haut */
+/* CV */
 #cv{
     top:120px;
     left:435px;
@@ -51,7 +62,7 @@ body{
     height:220px;
 }
 
-/* VOLUME - branche haut droite */
+/* VOLUME */
 #volume{
     top:260px;
     right:240px;
@@ -59,7 +70,7 @@ body{
     height:160px;
 }
 
-/* ZINE - branche bas gauche */
+/* ZINE */
 #zine{
     bottom:230px;
     left:320px;
@@ -67,7 +78,7 @@ body{
     height:170px;
 }
 
-/* DESSIN - branche bas droite */
+/* DESSIN */
 #dessin{
     bottom:230px;
     right:320px;
@@ -83,7 +94,7 @@ body{
 
 <div id="container">
 
-<img id="etoile" src="etoile.webp" alt="étoile">
+<img id="etoile" src="etoile.webp" alt="">
 
 <div class="zone" id="portfolio"
 onmouseover="changeImage('etoile-portfolio.webp')"
@@ -118,6 +129,23 @@ onclick="location.href='dessin.html'">
 </div>
 
 <script>
+
+/* Préchargement */
+
+const images = [
+    "etoile-portfolio.webp",
+    "etoile-cv.webp",
+    "etoile-volume.webp",
+    "etoile-zine.webp",
+    "etoile-dessin.webp"
+];
+
+images.forEach(src => {
+    const img = new Image();
+    img.src = src;
+});
+
+/* Changement d'image */
 
 function changeImage(image){
     document.getElementById("etoile").src = image;

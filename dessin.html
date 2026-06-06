@@ -26,12 +26,12 @@ body{
 
 .page{
     padding-top:90px;
-    padding-bottom:120px;
+    padding-bottom:160px;
 }
 
 .serie{
     width:100vw;
-    margin-bottom:120px;
+    margin-bottom:160px;
 }
 
 .titre-serie{
@@ -39,6 +39,10 @@ body{
     font-size:22px;
     margin-bottom:25px;
     font-weight:normal;
+    max-width:900px;
+    margin-left:auto;
+    margin-right:auto;
+    line-height:1.3;
 }
 
 .menu-horizontal{
@@ -46,7 +50,7 @@ body{
     overflow-x:auto;
     overflow-y:hidden;
     white-space:nowrap;
-    padding:25px 40px;
+    padding:45px 60px;
     box-sizing:border-box;
     border-top:1px solid black;
     border-bottom:1px solid black;
@@ -54,44 +58,56 @@ body{
 }
 
 .miniature{
-    height:260px;
-    margin-right:35px;
+    height:360px;
+    margin-right:45px;
     cursor:pointer;
     vertical-align:middle;
     border:1px solid black;
 }
 
 .miniature:hover{
-    animation:tremble 0.12s infinite;
+    opacity:0.75;
 }
 
-@keyframes tremble{
-    0%{ transform:translate(0px, 0px) rotate(0deg); }
-    25%{ transform:translate(2px, -1px) rotate(1deg); }
-    50%{ transform:translate(-2px, 1px) rotate(-1deg); }
-    75%{ transform:translate(1px, 2px) rotate(1deg); }
-    100%{ transform:translate(-1px, -2px) rotate(0deg); }
-}
+/* FENÊTRE POP-UP */
 
-#fenetre{
+#popup{
     position:fixed;
     top:0;
     left:0;
     width:100vw;
     height:100vh;
-    background:rgba(255,255,255,0.85);
+    background:rgba(255,255,255,0.75);
     display:none;
     justify-content:center;
     align-items:center;
     z-index:100;
 }
 
-#fenetre img{
+#popup-contenu{
+    position:relative;
+    background:white;
+    border:1px solid black;
+    padding:20px;
     max-width:90vw;
     max-height:90vh;
+    box-sizing:border-box;
+}
+
+#image-popup{
+    display:block;
+    max-width:85vw;
+    max-height:82vh;
     object-fit:contain;
-    border:1px solid black;
-    background:white;
+}
+
+#fermer{
+    position:absolute;
+    top:5px;
+    right:10px;
+    font-size:22px;
+    cursor:pointer;
+    color:black;
 }
 </style>
 </head>
@@ -106,32 +122,84 @@ body{
         <h1 class="titre-serie">séquence narrative de re-dessin par couches successives</h1>
 
         <div class="menu-horizontal">
-            <img class="miniature" src="dessin-01.jpg" onclick="ouvrirImage('dessin-01.jpg')">
-            <img class="miniature" src="dessin-02.jpg" onclick="ouvrirImage('dessin-02.jpg')">
-            <img class="miniature" src="dessin-03.jpg" onclick="ouvrirImage('dessin-03.jpg')">
-            <img class="miniature" src="dessin-04.jpg" onclick="ouvrirImage('dessin-04.jpg')">
-            <img class="miniature" src="dessin-05.jpg" onclick="ouvrirImage('dessin-05.jpg')">
-            <img class="miniature" src="dessin-06.jpg" onclick="ouvrirImage('dessin-06.jpg')">
-            <img class="miniature" src="dessin-07.jpg" onclick="ouvrirImage('dessin-07.jpg')">
+            <img class="miniature" src="dessin-01.webp" onclick="ouvrirPopup(0)">
+            <img class="miniature" src="dessin-02.webp" onclick="ouvrirPopup(1)">
+            <img class="miniature" src="dessin-03.webp" onclick="ouvrirPopup(2)">
+            <img class="miniature" src="dessin-04.webp" onclick="ouvrirPopup(3)">
+            <img class="miniature" src="dessin-05.webp" onclick="ouvrirPopup(4)">
+            <img class="miniature" src="dessin-06.webp" onclick="ouvrirPopup(5)">
+            <img class="miniature" src="dessin-07.webp" onclick="ouvrirPopup(6)">
         </div>
     </div>
 
 </div>
 
-<div id="fenetre" onclick="fermerImage()">
-    <img id="image-ouverte" src="" alt="" onclick="event.stopPropagation()">
+<div id="popup" onclick="fermerPopup()">
+    <div id="popup-contenu" onclick="event.stopPropagation()">
+        <div id="fermer" onclick="fermerPopup()">×</div>
+        <img id="image-popup" src="" alt="">
+    </div>
 </div>
 
 <script>
-function ouvrirImage(image){
-    document.getElementById("image-ouverte").src = image;
-    document.getElementById("fenetre").style.display = "flex";
+const dessins = [
+    "dessin-01.webp",
+    "dessin-02.webp",
+    "dessin-03.webp",
+    "dessin-04.webp",
+    "dessin-05.webp",
+    "dessin-06.webp",
+    "dessin-07.webp"
+];
+
+let imageActuelle = 0;
+
+function ouvrirPopup(index){
+    imageActuelle = index;
+    document.getElementById("image-popup").src = dessins[imageActuelle];
+    document.getElementById("popup").style.display = "flex";
 }
 
-function fermerImage(){
-    document.getElementById("fenetre").style.display = "none";
-    document.getElementById("image-ouverte").src = "";
+function fermerPopup(){
+    document.getElementById("popup").style.display = "none";
+    document.getElementById("image-popup").src = "";
 }
+
+function imageSuivante(){
+    imageActuelle = imageActuelle + 1;
+
+    if(imageActuelle >= dessins.length){
+        imageActuelle = 0;
+    }
+
+    document.getElementById("image-popup").src = dessins[imageActuelle];
+}
+
+function imagePrecedente(){
+    imageActuelle = imageActuelle - 1;
+
+    if(imageActuelle < 0){
+        imageActuelle = dessins.length - 1;
+    }
+
+    document.getElementById("image-popup").src = dessins[imageActuelle];
+}
+
+document.addEventListener("keydown", function(event){
+    const popupOuvert = document.getElementById("popup").style.display === "flex";
+
+    if(popupOuvert && event.key === "ArrowRight"){
+        imageSuivante();
+    }
+
+    if(popupOuvert && event.key === "ArrowLeft"){
+        imagePrecedente();
+    }
+
+    if(popupOuvert && event.key === "Escape"){
+        fermerPopup();
+    }
+});
 </script>
 
 </body>

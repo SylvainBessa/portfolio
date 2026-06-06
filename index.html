@@ -30,8 +30,9 @@ body{
     position:absolute;
     cursor:pointer;
 
-    /* POUR VOIR LES ZONES */
-    /* border:2px solid red; */
+    /* POUR AJUSTER LES ZONES :
+    border:2px solid red;
+    */
 }
 
 /* PORTFOLIO - branche haut gauche */
@@ -58,16 +59,16 @@ body{
     height:160px;
 }
 
-/* DESSIN - branche bas gauche */
-#dessin{
+/* ZINE - branche bas gauche */
+#zine{
     bottom:230px;
     left:320px;
     width:160px;
     height:170px;
 }
 
-/* ZINE - branche bas droite */
-#zine{
+/* DESSIN - branche bas droite */
+#dessin{
     bottom:230px;
     right:320px;
     width:160px;
@@ -75,13 +76,14 @@ body{
 }
 
 </style>
+
 </head>
 
 <body>
 
 <div id="container">
 
-<img id="etoile" src="etoile.png">
+<img id="etoile" src="etoile.png" alt="étoile">
 
 <div class="zone" id="portfolio"
 onmouseover="changeImage('etoile-portfolio.png')"
@@ -101,16 +103,16 @@ onmouseout="resetImage()"
 onclick="location.href='volume.html'">
 </div>
 
-<div class="zone" id="dessin"
-onmouseover="changeImage('etoile-dessin.png')"
-onmouseout="resetImage()"
-onclick="location.href='dessin.html'">
-</div>
-
 <div class="zone" id="zine"
 onmouseover="changeImage('etoile-zine.png')"
 onmouseout="resetImage()"
 onclick="location.href='zine.html'">
+</div>
+
+<div class="zone" id="dessin"
+onmouseover="changeImage('etoile-dessin.png')"
+onmouseout="resetImage()"
+onclick="location.href='dessin.html'">
 </div>
 
 </div>

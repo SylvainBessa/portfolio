@@ -2,11 +2,8 @@
 <html lang="fr">
 
 <head>
-
 <meta charset="UTF-8">
 <title>Portfolio</title>
-
-<!-- Préchargement des images -->
 
 <link rel="preload" href="etoile-portfolio.webp" as="image">
 <link rel="preload" href="etoile-cv.webp" as="image">
@@ -15,7 +12,6 @@
 <link rel="preload" href="etoile-dessin.webp" as="image">
 
 <style>
-
 body{
     margin:0;
     background:white;
@@ -23,6 +19,39 @@ body{
     display:flex;
     justify-content:center;
     align-items:center;
+    overflow:hidden;
+}
+
+#nuage{
+    position:absolute;
+    top:20px;
+    left:-300px;
+    width:260px;
+    animation: promenade 30s linear infinite;
+    z-index:10;
+}
+
+#nom{
+    position:absolute;
+    top:85px;
+    left:-300px;
+    width:260px;
+    text-align:center;
+    font-family:"Times New Roman", serif;
+    font-size:28px;
+    color:black;
+    animation: promenade 30s linear infinite;
+    z-index:11;
+    pointer-events:none;
+}
+
+@keyframes promenade{
+    from{
+        transform:translateX(-300px);
+    }
+    to{
+        transform:translateX(calc(100vw + 600px));
+    }
 }
 
 #container{
@@ -35,18 +64,11 @@ body{
     display:block;
 }
 
-/* Pour visualiser les zones :
-.zone{
-    border:2px solid red;
-}
-*/
-
 .zone{
     position:absolute;
     cursor:pointer;
 }
 
-/* PORTFOLIO */
 #portfolio{
     top:260px;
     left:240px;
@@ -54,7 +76,6 @@ body{
     height:160px;
 }
 
-/* CV */
 #cv{
     top:120px;
     left:435px;
@@ -62,7 +83,6 @@ body{
     height:220px;
 }
 
-/* VOLUME */
 #volume{
     top:260px;
     right:240px;
@@ -70,7 +90,6 @@ body{
     height:160px;
 }
 
-/* ZINE */
 #zine{
     bottom:230px;
     left:320px;
@@ -78,19 +97,19 @@ body{
     height:170px;
 }
 
-/* DESSIN */
 #dessin{
     bottom:230px;
     right:320px;
     width:160px;
     height:170px;
 }
-
 </style>
-
 </head>
 
 <body>
+
+<img id="nuage" src="nuage.webp" alt="">
+<div id="nom">Sylvain Bessa</div>
 
 <div id="container">
 
@@ -99,39 +118,31 @@ body{
 <div class="zone" id="portfolio"
 onmouseover="changeImage('etoile-portfolio.webp')"
 onmouseout="resetImage()"
-onclick="location.href='portfolio.html'">
-</div>
+onclick="location.href='portfolio.html'"></div>
 
 <div class="zone" id="cv"
 onmouseover="changeImage('etoile-cv.webp')"
 onmouseout="resetImage()"
-onclick="location.href='cv.html'">
-</div>
+onclick="location.href='cv.html'"></div>
 
 <div class="zone" id="volume"
 onmouseover="changeImage('etoile-volume.webp')"
 onmouseout="resetImage()"
-onclick="location.href='volume.html'">
-</div>
+onclick="location.href='volume.html'"></div>
 
 <div class="zone" id="zine"
 onmouseover="changeImage('etoile-zine.webp')"
 onmouseout="resetImage()"
-onclick="location.href='zine.html'">
-</div>
+onclick="location.href='zine.html'"></div>
 
 <div class="zone" id="dessin"
 onmouseover="changeImage('etoile-dessin.webp')"
 onmouseout="resetImage()"
-onclick="location.href='dessin.html'">
-</div>
+onclick="location.href='dessin.html'"></div>
 
 </div>
 
 <script>
-
-/* Préchargement */
-
 const images = [
     "etoile-portfolio.webp",
     "etoile-cv.webp",
@@ -145,8 +156,6 @@ images.forEach(src => {
     img.src = src;
 });
 
-/* Changement d'image */
-
 function changeImage(image){
     document.getElementById("etoile").src = image;
 }
@@ -154,7 +163,6 @@ function changeImage(image){
 function resetImage(){
     document.getElementById("etoile").src = "etoile.webp";
 }
-
 </script>
 
 </body>

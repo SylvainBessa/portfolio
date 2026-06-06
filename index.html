@@ -5,12 +5,6 @@
 <meta charset="UTF-8">
 <title>Portfolio</title>
 
-<link rel="preload" href="etoile-portfolio.webp" as="image">
-<link rel="preload" href="etoile-cv.webp" as="image">
-<link rel="preload" href="etoile-volume.webp" as="image">
-<link rel="preload" href="etoile-zine.webp" as="image">
-<link rel="preload" href="etoile-dessin.webp" as="image">
-
 <style>
 body{
     margin:0;
@@ -20,6 +14,7 @@ body{
     justify-content:center;
     align-items:center;
     overflow:hidden;
+    font-family:"Times New Roman", serif;
 }
 
 #container{
@@ -37,7 +32,43 @@ body{
     cursor:pointer;
 }
 
-/* PORTFOLIO */
+.texte-menu{
+    position:absolute;
+    display:none;
+    font-size:32px;
+    color:black;
+    pointer-events:none;
+    z-index:10;
+    font-style:italic;
+}
+
+/* TEXTES */
+#texte-portfolio{
+    top:165px;
+    left:105px;
+}
+
+#texte-cv{
+    top:65px;
+    left:480px;
+}
+
+#texte-volume{
+    top:165px;
+    right:110px;
+}
+
+#texte-zine{
+    bottom:125px;
+    left:180px;
+}
+
+#texte-dessin{
+    bottom:125px;
+    right:160px;
+}
+
+/* ZONES SUR LES BRANCHES */
 #portfolio{
     top:260px;
     left:240px;
@@ -45,7 +76,6 @@ body{
     height:160px;
 }
 
-/* CV */
 #cv{
     top:120px;
     left:435px;
@@ -53,7 +83,6 @@ body{
     height:220px;
 }
 
-/* VOLUME */
 #volume{
     top:260px;
     right:240px;
@@ -61,7 +90,6 @@ body{
     height:160px;
 }
 
-/* ZINE */
 #zine{
     bottom:230px;
     left:320px;
@@ -69,7 +97,6 @@ body{
     height:170px;
 }
 
-/* DESSIN */
 #dessin{
     bottom:230px;
     right:320px;
@@ -85,53 +112,50 @@ body{
 
 <img id="etoile" src="etoile.webp" alt="">
 
+<div id="texte-portfolio" class="texte-menu">portfolio</div>
+<div id="texte-cv" class="texte-menu">CV</div>
+<div id="texte-volume" class="texte-menu">volume</div>
+<div id="texte-zine" class="texte-menu">zine</div>
+<div id="texte-dessin" class="texte-menu">dessin</div>
+
 <div class="zone" id="portfolio"
-onmouseover="changeImage('etoile-portfolio.webp')"
-onmouseout="resetImage()"
+onmouseover="afficherTexte('texte-portfolio')"
+onmouseout="cacherTextes()"
 onclick="location.href='portfolio.html'"></div>
 
 <div class="zone" id="cv"
-onmouseover="changeImage('etoile-cv.webp')"
-onmouseout="resetImage()"
+onmouseover="afficherTexte('texte-cv')"
+onmouseout="cacherTextes()"
 onclick="location.href='cv.html'"></div>
 
 <div class="zone" id="volume"
-onmouseover="changeImage('etoile-volume.webp')"
-onmouseout="resetImage()"
+onmouseover="afficherTexte('texte-volume')"
+onmouseout="cacherTextes()"
 onclick="location.href='volume.html'"></div>
 
 <div class="zone" id="zine"
-onmouseover="changeImage('etoile-zine.webp')"
-onmouseout="resetImage()"
+onmouseover="afficherTexte('texte-zine')"
+onmouseout="cacherTextes()"
 onclick="location.href='zine.html'"></div>
 
 <div class="zone" id="dessin"
-onmouseover="changeImage('etoile-dessin.webp')"
-onmouseout="resetImage()"
+onmouseover="afficherTexte('texte-dessin')"
+onmouseout="cacherTextes()"
 onclick="location.href='dessin.html'"></div>
 
 </div>
 
 <script>
-const images = [
-    "etoile-portfolio.webp",
-    "etoile-cv.webp",
-    "etoile-volume.webp",
-    "etoile-zine.webp",
-    "etoile-dessin.webp"
-];
-
-images.forEach(src => {
-    const img = new Image();
-    img.src = src;
-});
-
-function changeImage(image){
-    document.getElementById("etoile").src = image;
+function afficherTexte(id){
+    cacherTextes();
+    document.getElementById(id).style.display = "block";
 }
 
-function resetImage(){
-    document.getElementById("etoile").src = "etoile.webp";
+function cacherTextes(){
+    const textes = document.querySelectorAll(".texte-menu");
+    textes.forEach(function(texte){
+        texte.style.display = "none";
+    });
 }
 </script>
 

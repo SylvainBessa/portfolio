@@ -193,15 +193,13 @@ body{
    FENÊTRE PHOTO
 ========================= */
 
-.fenetre-photo{
-    position:absolute;
-    background:white;
-    border:1px solid black;
-    box-sizing:border-box;
-    padding:0;
-    min-width:240px;
-    min-height:180px;
-    overflow:hidden;
+.fenetre-photo {
+    position: fixed;
+    width: auto;
+    height: auto;
+    max-width: 76vw;
+    max-height: 76vh;
+    overflow: hidden;
 }
 
 
@@ -286,15 +284,13 @@ body{
    IMAGE
 ========================= */
 
-.fenetre-photo img{
-    display:block;
-    width:auto;
-    height:auto;
-    max-width:none;
-    max-height:none;
-    object-fit:contain;
-    transform-origin:center center;
-    transition:transform 0.15s ease;
+.fenetre-photo img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: calc(76vh - 30px);
+    object-fit: contain;
 }
 
 
@@ -303,14 +299,14 @@ body{
 ========================= */
 
 #fenetre-1{
-    top:8vh;
-    left:10vw;
+    top: 6vh;
+    left: 12vw;
     z-index:1;
 }
 
 #fenetre-2{
-    top:20vh;
-    left:40vw;
+    top: 16vh;
+    right: 12vw;
     z-index:2;
 }
 

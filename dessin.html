@@ -6,6 +6,7 @@
 <title>Dessin</title>
 
 <style>
+
 body{
     margin:0;
     background:white;
@@ -21,7 +22,7 @@ body{
     color:blue;
     text-decoration:underline;
     font-size:18px;
-    z-index:200;
+    z-index:300;
 }
 
 .page{
@@ -34,27 +35,31 @@ body{
     margin-bottom:160px;
 }
 
-/* TITRE + APPAREIL PHOTO */
 
-.titre-serie{
-    text-align:center;
-    font-size:22px;
-    margin-bottom:25px;
-    font-weight:normal;
-    max-width:900px;
-    margin-left:auto;
-    margin-right:auto;
-    line-height:1.3;
-}
+/* =========================
+   TITRE + ICÔNE
+========================= */
 
 .titre-conteneur{
     display:flex;
     justify-content:center;
     align-items:center;
-    gap:12px;
+    gap:8px;
+    margin-bottom:25px;
 }
 
-/* ICÔNE APPAREIL PHOTO */
+.titre-serie{
+    text-align:center;
+    font-size:22px;
+    margin:0;
+    font-weight:normal;
+    line-height:1.3;
+}
+
+
+/* =========================
+   ICÔNE APPAREIL PHOTO
+========================= */
 
 .camera{
     position:relative;
@@ -94,7 +99,10 @@ body{
     opacity:0.5;
 }
 
-/* MENU DES DESSINS */
+
+/* =========================
+   MENU DES DESSINS
+========================= */
 
 .menu-horizontal{
     width:100vw;
@@ -120,7 +128,10 @@ body{
     opacity:0.75;
 }
 
-/* FENÊTRE POP-UP DES DESSINS */
+
+/* =========================
+   POP-UP DES DESSINS
+========================= */
 
 #popup{
     position:fixed;
@@ -161,7 +172,10 @@ body{
     color:black;
 }
 
-/* FENÊTRES DES PHOTOS SUCCESSIVES */
+
+/* =========================
+   FENÊTRES DES PHOTOS
+========================= */
 
 #photos-popup{
     position:fixed;
@@ -169,12 +183,10 @@ body{
     left:0;
     width:100vw;
     height:100vh;
-    background:rgba(255,255,255,0.55);
+    background:rgba(255,255,255,0.35);
     display:none;
-    z-index:150;
+    z-index:200;
 }
-
-/* Chaque fenêtre */
 
 .fenetre-photo{
     position:absolute;
@@ -188,9 +200,10 @@ body{
     display:block;
     width:auto;
     height:auto;
-    max-width:40vw;
-    max-height:65vh;
+    max-width:38vw;
+    max-height:60vh;
 }
+
 
 /* Position des deux fenêtres */
 
@@ -204,7 +217,10 @@ body{
     right:12vw;
 }
 
-/* Bouton fermer */
+
+/* =========================
+   BOUTONS FERMER
+========================= */
 
 .fermer-photo{
     position:absolute;
@@ -223,13 +239,18 @@ body{
 </style>
 </head>
 
+
 <body>
 
 <a id="retour" href="index.html">retour</a>
 
+
 <div class="page">
 
     <div class="serie">
+
+
+        <!-- TITRE + APPAREIL PHOTO -->
 
         <div class="titre-conteneur">
 
@@ -237,19 +258,60 @@ body{
                 séquence narrative de re-dessin par couches successives
             </h1>
 
-            <div class="camera" onclick="ouvrirPhotos()" title="voir les photographies"></div>
+            <div
+                class="camera"
+                onclick="ouvrirPhotos()"
+                title="voir les photographies"
+            ></div>
 
         </div>
+
+
+        <!-- MENU DES DESSINS -->
 
         <div class="menu-horizontal">
 
-            <img class="miniature" src="dessin-01.jpg" onclick="ouvrirPopup(0)">
-            <img class="miniature" src="dessin-02.jpg" onclick="ouvrirPopup(1)">
-            <img class="miniature" src="dessin-03.jpg" onclick="ouvrirPopup(2)">
-            <img class="miniature" src="dessin-04.jpg" onclick="ouvrirPopup(3)">
-            <img class="miniature" src="dessin-05.jpg" onclick="ouvrirPopup(4)">
-            <img class="miniature" src="dessin-06.jpg" onclick="ouvrirPopup(5)">
-            <img class="miniature" src="dessin-07.jpg" onclick="ouvrirPopup(6)">
+            <img
+                class="miniature"
+                src="dessin-01.jpg"
+                onclick="ouvrirPopup(0)"
+            >
+
+            <img
+                class="miniature"
+                src="dessin-02.jpg"
+                onclick="ouvrirPopup(1)"
+            >
+
+            <img
+                class="miniature"
+                src="dessin-03.jpg"
+                onclick="ouvrirPopup(2)"
+            >
+
+            <img
+                class="miniature"
+                src="dessin-04.jpg"
+                onclick="ouvrirPopup(3)"
+            >
+
+            <img
+                class="miniature"
+                src="dessin-05.jpg"
+                onclick="ouvrirPopup(4)"
+            >
+
+            <img
+                class="miniature"
+                src="dessin-06.jpg"
+                onclick="ouvrirPopup(5)"
+            >
+
+            <img
+                class="miniature"
+                src="dessin-07.jpg"
+                onclick="ouvrirPopup(6)"
+            >
 
         </div>
 
@@ -258,39 +320,82 @@ body{
 </div>
 
 
-<!-- POP-UP DES DESSINS -->
+<!-- =========================
+     POP-UP DES DESSINS
+========================= -->
 
 <div id="popup" onclick="fermerPopup()">
 
-    <div id="popup-contenu" onclick="event.stopPropagation()">
+    <div
+        id="popup-contenu"
+        onclick="event.stopPropagation()"
+    >
 
-        <div id="fermer" onclick="fermerPopup()">×</div>
+        <div
+            id="fermer"
+            onclick="fermerPopup()"
+        >
+            ×
+        </div>
 
-        <img id="image-popup" src="" alt="">
+        <img
+            id="image-popup"
+            src=""
+            alt=""
+        >
 
     </div>
 
 </div>
 
 
-<!-- DEUX FENÊTRES PHOTOGRAPHIQUES -->
+<!-- =========================
+     DEUX FENÊTRES PHOTOS
+========================= -->
 
 <div id="photos-popup">
 
-    <div id="fenetre-1" class="fenetre-photo">
 
-        <div class="fermer-photo" onclick="fermerPhoto(1)">×</div>
+    <!-- PHOTO 1 -->
 
-        <img src="successives-1.jpg" alt="Photographie du processus de redessin">
+    <div
+        id="fenetre-1"
+        class="fenetre-photo"
+    >
+
+        <div
+            class="fermer-photo"
+            onclick="fermerPhoto(1)"
+        >
+            ×
+        </div>
+
+        <img
+            src="successives-1.jpg"
+            alt="Photographie du processus de redessin"
+        >
 
     </div>
 
 
-    <div id="fenetre-2" class="fenetre-photo">
+    <!-- PHOTO 2 -->
 
-        <div class="fermer-photo" onclick="fermerPhoto(2)">×</div>
+    <div
+        id="fenetre-2"
+        class="fenetre-photo"
+    >
 
-        <img src="successives-2.jpg" alt="Photographie du processus de redessin">
+        <div
+            class="fermer-photo"
+            onclick="fermerPhoto(2)"
+        >
+            ×
+        </div>
+
+        <img
+            src="successives-2.jpg"
+            alt="Photographie du processus de redessin"
+        >
 
     </div>
 
@@ -299,7 +404,9 @@ body{
 
 <script>
 
-/* LISTE DES DESSINS */
+/* =========================
+   LISTE DES DESSINS
+========================= */
 
 const dessins = [
     "dessin-01.jpg",
@@ -314,95 +421,129 @@ const dessins = [
 let imageActuelle = 0;
 
 
-/* OUVRIR UN DESSIN */
+/* =========================
+   OUVRIR UN DESSIN
+========================= */
 
 function ouvrirPopup(index){
 
     imageActuelle = index;
 
-    document.getElementById("image-popup").src = dessins[imageActuelle];
+    document.getElementById("image-popup").src =
+        dessins[imageActuelle];
 
-    document.getElementById("popup").style.display = "flex";
-
+    document.getElementById("popup").style.display =
+        "flex";
 }
 
 
-/* FERMER UN DESSIN */
+/* =========================
+   FERMER UN DESSIN
+========================= */
 
 function fermerPopup(){
 
-    document.getElementById("popup").style.display = "none";
+    document.getElementById("popup").style.display =
+        "none";
 
-    document.getElementById("image-popup").src = "";
-
+    document.getElementById("image-popup").src =
+        "";
 }
 
 
-/* DESSIN SUIVANT */
+/* =========================
+   DESSIN SUIVANT
+========================= */
 
 function imageSuivante(){
 
-    imageActuelle = imageActuelle + 1;
+    imageActuelle++;
 
     if(imageActuelle >= dessins.length){
         imageActuelle = 0;
     }
 
-    document.getElementById("image-popup").src = dessins[imageActuelle];
-
+    document.getElementById("image-popup").src =
+        dessins[imageActuelle];
 }
 
 
-/* DESSIN PRÉCÉDENT */
+/* =========================
+   DESSIN PRÉCÉDENT
+========================= */
 
 function imagePrecedente(){
 
-    imageActuelle = imageActuelle - 1;
+    imageActuelle--;
 
     if(imageActuelle < 0){
         imageActuelle = dessins.length - 1;
     }
 
-    document.getElementById("image-popup").src = dessins[imageActuelle];
-
+    document.getElementById("image-popup").src =
+        dessins[imageActuelle];
 }
 
 
-/* OUVRIR LES DEUX PHOTOS */
+/* =========================
+   OUVRIR LES DEUX PHOTOS
+========================= */
 
 function ouvrirPhotos(){
 
-    document.getElementById("photos-popup").style.display = "block";
+    document.getElementById("photos-popup").style.display =
+        "block";
 
-    document.getElementById("fenetre-1").style.display = "block";
-    document.getElementById("fenetre-2").style.display = "block";
+    document.getElementById("fenetre-1").style.display =
+        "block";
 
+    document.getElementById("fenetre-2").style.display =
+        "block";
 }
 
 
-/* FERMER UNE DES DEUX PHOTOS */
+/* =========================
+   FERMER UNE PHOTO
+========================= */
 
 function fermerPhoto(numero){
 
-    document.getElementById("fenetre-" + numero).style.display = "none";
+    document.getElementById("fenetre-" + numero).style.display =
+        "none";
 
+    const photo1 =
+        document.getElementById("fenetre-1").style.display;
+
+    const photo2 =
+        document.getElementById("fenetre-2").style.display;
+
+    if(photo1 === "none" && photo2 === "none"){
+
+        document.getElementById("photos-popup").style.display =
+            "none";
+    }
 }
 
 
-/* NAVIGATION AU CLAVIER */
+/* =========================
+   NAVIGATION AU CLAVIER
+========================= */
 
 document.addEventListener("keydown", function(event){
 
     const popupOuvert =
         document.getElementById("popup").style.display === "flex";
 
+
     if(popupOuvert && event.key === "ArrowRight"){
         imageSuivante();
     }
 
+
     if(popupOuvert && event.key === "ArrowLeft"){
         imagePrecedente();
     }
+
 
     if(popupOuvert && event.key === "Escape"){
         fermerPopup();

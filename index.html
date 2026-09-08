@@ -5,7 +5,15 @@
 <meta charset="UTF-8">
 <title>Portfolio</title>
 
+<!-- PRÉCHARGEMENT DES 5 IMAGES DE SURVOL -->
+<link rel="preload" href="etoile-portfolio.png" as="image">
+<link rel="preload" href="etoile-cv.png" as="image">
+<link rel="preload" href="etoile-volume.png" as="image">
+<link rel="preload" href="etoile-zine.png" as="image">
+<link rel="preload" href="etoile-dessin.png" as="image">
+
 <style>
+
 body{
     margin:0;
     background:white;
@@ -14,7 +22,6 @@ body{
     justify-content:center;
     align-items:center;
     overflow:hidden;
-    font-family:"Times New Roman", serif;
 }
 
 #container{
@@ -32,49 +39,22 @@ body{
     cursor:pointer;
 }
 
-.texte-menu{
-    position:absolute;
-    display:none;
-    font-size:38px;
-    color:black;
-    pointer-events:none;
-    z-index:10;
-    font-style:italic;
-}
 
-/* TEXTES */
-#texte-portfolio{
-    top:258px;
-    left:216px;
-}
+/* ========================= */
+/* ZONE PORTFOLIO */
+/* ========================= */
 
-#texte-cv{
-    top:156px;
-    left:576px;
-}
-
-#texte-volume{
-    top:258px;
-    right:216px;
-}
-
-#texte-zine{
-    bottom:222px;
-    left:300px;
-}
-
-#texte-dessin{
-    bottom:222px;
-    right:288px;
-}
-
-/* ZONES CLIQUABLES */
 #portfolio{
     top:312px;
     left:288px;
     width:216px;
     height:192px;
 }
+
+
+/* ========================= */
+/* ZONE CV */
+/* ========================= */
 
 #cv{
     top:144px;
@@ -83,12 +63,22 @@ body{
     height:264px;
 }
 
+
+/* ========================= */
+/* ZONE VOLUME */
+/* ========================= */
+
 #volume{
     top:312px;
     right:288px;
     width:216px;
     height:192px;
 }
+
+
+/* ========================= */
+/* ZONE ZINE */
+/* ========================= */
 
 #zine{
     bottom:276px;
@@ -97,66 +87,126 @@ body{
     height:204px;
 }
 
+
+/* ========================= */
+/* ZONE DESSIN */
+/* ========================= */
+
 #dessin{
     bottom:276px;
     right:384px;
     width:192px;
     height:204px;
 }
+
 </style>
 </head>
+
 
 <body>
 
 <div id="container">
 
-<img id="etoile" src="etoile.jpg" alt="">
+    <!-- IMAGE DE BASE -->
+    <img id="etoile" src="etoile.png" alt="">
 
-<div id="texte-portfolio" class="texte-menu">portfolio</div>
-<div id="texte-cv" class="texte-menu">CV</div>
-<div id="texte-volume" class="texte-menu">volume</div>
-<div id="texte-zine" class="texte-menu">zine</div>
-<div id="texte-dessin" class="texte-menu">dessin</div>
 
-<div class="zone" id="portfolio"
-onmouseover="afficherTexte('texte-portfolio')"
-onmouseout="cacherTextes()"
-onclick="location.href='portfolio.html'"></div>
+    <!-- PORTFOLIO -->
+    <div
+        class="zone"
+        id="portfolio"
+        onmouseover="changeImage('etoile-portfolio.png')"
+        onmouseout="resetImage()"
+        onclick="location.href='portfolio.html'">
+    </div>
 
-<div class="zone" id="cv"
-onmouseover="afficherTexte('texte-cv')"
-onmouseout="cacherTextes()"
-onclick="location.href='cv.html'"></div>
 
-<div class="zone" id="volume"
-onmouseover="afficherTexte('texte-volume')"
-onmouseout="cacherTextes()"
-onclick="location.href='volume.html'"></div>
+    <!-- CV -->
+    <div
+        class="zone"
+        id="cv"
+        onmouseover="changeImage('etoile-cv.png')"
+        onmouseout="resetImage()"
+        onclick="location.href='cv.html'">
+    </div>
 
-<div class="zone" id="zine"
-onmouseover="afficherTexte('texte-zine')"
-onmouseout="cacherTextes()"
-onclick="location.href='zine.html'"></div>
 
-<div class="zone" id="dessin"
-onmouseover="afficherTexte('texte-dessin')"
-onmouseout="cacherTextes()"
-onclick="location.href='dessin.html'"></div>
+    <!-- VOLUME -->
+    <div
+        class="zone"
+        id="volume"
+        onmouseover="changeImage('etoile-volume.png')"
+        onmouseout="resetImage()"
+        onclick="location.href='volume.html'">
+    </div>
+
+
+    <!-- ZINE -->
+    <div
+        class="zone"
+        id="zine"
+        onmouseover="changeImage('etoile-zine.png')"
+        onmouseout="resetImage()"
+        onclick="location.href='zine.html'">
+    </div>
+
+
+    <!-- DESSIN -->
+    <div
+        class="zone"
+        id="dessin"
+        onmouseover="changeImage('etoile-dessin.png')"
+        onmouseout="resetImage()"
+        onclick="location.href='dessin.html'">
+    </div>
 
 </div>
 
+
 <script>
-function afficherTexte(id){
-    cacherTextes();
-    document.getElementById(id).style.display = "block";
+
+/* ========================= */
+/* PRÉCHARGEMENT DES IMAGES */
+/* ========================= */
+
+const images = [
+    "etoile-portfolio.png",
+    "etoile-cv.png",
+    "etoile-volume.png",
+    "etoile-zine.png",
+    "etoile-dessin.png"
+];
+
+images.forEach(function(src){
+
+    const img = new Image();
+
+    img.src = src;
+
+});
+
+
+/* ========================= */
+/* CHANGEMENT D'IMAGE */
+/* ========================= */
+
+function changeImage(image){
+
+    document.getElementById("etoile").src = image;
+
 }
 
-function cacherTextes(){
-    const textes = document.querySelectorAll(".texte-menu");
-    textes.forEach(function(texte){
-        texte.style.display = "none";
-    });
+
+/* ========================= */
+/* RETOUR À L'IMAGE DE BASE */
+/* ========================= */
+
+function resetImage(){
+
+    document.getElementById("etoile").src = "etoile.png";
+
 }
+
 </script>
 
 </body>

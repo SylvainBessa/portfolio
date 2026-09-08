@@ -21,7 +21,7 @@ body{
     color:blue;
     text-decoration:underline;
     font-size:18px;
-    z-index:20;
+    z-index:200;
 }
 
 .page{
@@ -34,6 +34,8 @@ body{
     margin-bottom:160px;
 }
 
+/* TITRE + APPAREIL PHOTO */
+
 .titre-serie{
     text-align:center;
     font-size:22px;
@@ -44,6 +46,55 @@ body{
     margin-right:auto;
     line-height:1.3;
 }
+
+.titre-conteneur{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:12px;
+}
+
+/* ICÔNE APPAREIL PHOTO */
+
+.camera{
+    position:relative;
+    width:24px;
+    height:17px;
+    border:1.5px solid black;
+    box-sizing:border-box;
+    cursor:pointer;
+    flex-shrink:0;
+}
+
+.camera:before{
+    content:"";
+    position:absolute;
+    width:8px;
+    height:4px;
+    border:1.5px solid black;
+    border-bottom:none;
+    left:4px;
+    top:-6px;
+    box-sizing:border-box;
+}
+
+.camera:after{
+    content:"";
+    position:absolute;
+    width:7px;
+    height:7px;
+    border:1.5px solid black;
+    border-radius:50%;
+    left:7px;
+    top:3px;
+    box-sizing:border-box;
+}
+
+.camera:hover{
+    opacity:0.5;
+}
+
+/* MENU DES DESSINS */
 
 .menu-horizontal{
     width:100vw;
@@ -69,7 +120,7 @@ body{
     opacity:0.75;
 }
 
-/* FENÊTRE POP-UP */
+/* FENÊTRE POP-UP DES DESSINS */
 
 #popup{
     position:fixed;
@@ -109,6 +160,66 @@ body{
     cursor:pointer;
     color:black;
 }
+
+/* FENÊTRES DES PHOTOS SUCCESSIVES */
+
+#photos-popup{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100vw;
+    height:100vh;
+    background:rgba(255,255,255,0.55);
+    display:none;
+    z-index:150;
+}
+
+/* Chaque fenêtre */
+
+.fenetre-photo{
+    position:absolute;
+    background:white;
+    border:1px solid black;
+    padding:20px;
+    box-sizing:border-box;
+}
+
+.fenetre-photo img{
+    display:block;
+    width:auto;
+    height:auto;
+    max-width:40vw;
+    max-height:65vh;
+}
+
+/* Position des deux fenêtres */
+
+#fenetre-1{
+    top:12vh;
+    left:12vw;
+}
+
+#fenetre-2{
+    top:25vh;
+    right:12vw;
+}
+
+/* Bouton fermer */
+
+.fermer-photo{
+    position:absolute;
+    top:3px;
+    right:8px;
+    font-size:22px;
+    line-height:22px;
+    cursor:pointer;
+    color:black;
+}
+
+.fermer-photo:hover{
+    opacity:0.5;
+}
+
 </style>
 </head>
 
@@ -119,9 +230,19 @@ body{
 <div class="page">
 
     <div class="serie">
-        <h1 class="titre-serie">séquence narrative de re-dessin par couches successives</h1>
+
+        <div class="titre-conteneur">
+
+            <h1 class="titre-serie">
+                séquence narrative de re-dessin par couches successives
+            </h1>
+
+            <div class="camera" onclick="ouvrirPhotos()" title="voir les photographies"></div>
+
+        </div>
 
         <div class="menu-horizontal">
+
             <img class="miniature" src="dessin-01.jpg" onclick="ouvrirPopup(0)">
             <img class="miniature" src="dessin-02.jpg" onclick="ouvrirPopup(1)">
             <img class="miniature" src="dessin-03.jpg" onclick="ouvrirPopup(2)">
@@ -129,19 +250,57 @@ body{
             <img class="miniature" src="dessin-05.jpg" onclick="ouvrirPopup(4)">
             <img class="miniature" src="dessin-06.jpg" onclick="ouvrirPopup(5)">
             <img class="miniature" src="dessin-07.jpg" onclick="ouvrirPopup(6)">
+
         </div>
+
     </div>
 
 </div>
+
+
+<!-- POP-UP DES DESSINS -->
 
 <div id="popup" onclick="fermerPopup()">
+
     <div id="popup-contenu" onclick="event.stopPropagation()">
+
         <div id="fermer" onclick="fermerPopup()">×</div>
+
         <img id="image-popup" src="" alt="">
+
     </div>
+
 </div>
 
+
+<!-- DEUX FENÊTRES PHOTOGRAPHIQUES -->
+
+<div id="photos-popup">
+
+    <div id="fenetre-1" class="fenetre-photo">
+
+        <div class="fermer-photo" onclick="fermerPhoto(1)">×</div>
+
+        <img src="successives-1.jpg" alt="Photographie du processus de redessin">
+
+    </div>
+
+
+    <div id="fenetre-2" class="fenetre-photo">
+
+        <div class="fermer-photo" onclick="fermerPhoto(2)">×</div>
+
+        <img src="successives-2.jpg" alt="Photographie du processus de redessin">
+
+    </div>
+
+</div>
+
+
 <script>
+
+/* LISTE DES DESSINS */
+
 const dessins = [
     "dessin-01.jpg",
     "dessin-02.jpg",
@@ -154,18 +313,35 @@ const dessins = [
 
 let imageActuelle = 0;
 
+
+/* OUVRIR UN DESSIN */
+
 function ouvrirPopup(index){
+
     imageActuelle = index;
+
     document.getElementById("image-popup").src = dessins[imageActuelle];
+
     document.getElementById("popup").style.display = "flex";
+
 }
+
+
+/* FERMER UN DESSIN */
 
 function fermerPopup(){
+
     document.getElementById("popup").style.display = "none";
+
     document.getElementById("image-popup").src = "";
+
 }
 
+
+/* DESSIN SUIVANT */
+
 function imageSuivante(){
+
     imageActuelle = imageActuelle + 1;
 
     if(imageActuelle >= dessins.length){
@@ -173,9 +349,14 @@ function imageSuivante(){
     }
 
     document.getElementById("image-popup").src = dessins[imageActuelle];
+
 }
 
+
+/* DESSIN PRÉCÉDENT */
+
 function imagePrecedente(){
+
     imageActuelle = imageActuelle - 1;
 
     if(imageActuelle < 0){
@@ -183,10 +364,37 @@ function imagePrecedente(){
     }
 
     document.getElementById("image-popup").src = dessins[imageActuelle];
+
 }
 
+
+/* OUVRIR LES DEUX PHOTOS */
+
+function ouvrirPhotos(){
+
+    document.getElementById("photos-popup").style.display = "block";
+
+    document.getElementById("fenetre-1").style.display = "block";
+    document.getElementById("fenetre-2").style.display = "block";
+
+}
+
+
+/* FERMER UNE DES DEUX PHOTOS */
+
+function fermerPhoto(numero){
+
+    document.getElementById("fenetre-" + numero).style.display = "none";
+
+}
+
+
+/* NAVIGATION AU CLAVIER */
+
 document.addEventListener("keydown", function(event){
-    const popupOuvert = document.getElementById("popup").style.display === "flex";
+
+    const popupOuvert =
+        document.getElementById("popup").style.display === "flex";
 
     if(popupOuvert && event.key === "ArrowRight"){
         imageSuivante();
@@ -199,7 +407,9 @@ document.addEventListener("keydown", function(event){
     if(popupOuvert && event.key === "Escape"){
         fermerPopup();
     }
+
 });
+
 </script>
 
 </body>

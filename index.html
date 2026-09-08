@@ -5,7 +5,6 @@
 <meta charset="UTF-8">
 <title>Portfolio</title>
 
-<!-- PRÉCHARGEMENT DES 5 IMAGES DE SURVOL -->
 <link rel="preload" href="etoile-portfolio.png" as="image">
 <link rel="preload" href="etoile-cv.png" as="image">
 <link rel="preload" href="etoile-volume.png" as="image">
@@ -13,7 +12,6 @@
 <link rel="preload" href="etoile-dessin.png" as="image">
 
 <style>
-
 body{
     margin:0;
     background:white;
@@ -26,7 +24,7 @@ body{
 
 #container{
     position:relative;
-    width:1200px;
+    width:1000px;
 }
 
 #etoile{
@@ -39,136 +37,82 @@ body{
     cursor:pointer;
 }
 
-
-/* ========================= */
-/* ZONE PORTFOLIO */
-/* ========================= */
-
+/* PORTFOLIO */
 #portfolio{
-    top:312px;
-    left:288px;
-    width:216px;
-    height:192px;
+    top:260px;
+    left:240px;
+    width:180px;
+    height:160px;
 }
 
-
-/* ========================= */
-/* ZONE CV */
-/* ========================= */
-
+/* CV */
 #cv{
-    top:144px;
-    left:522px;
-    width:156px;
-    height:264px;
+    top:120px;
+    left:435px;
+    width:130px;
+    height:220px;
 }
 
-
-/* ========================= */
-/* ZONE VOLUME */
-/* ========================= */
-
+/* VOLUME */
 #volume{
-    top:312px;
-    right:288px;
-    width:216px;
-    height:192px;
+    top:260px;
+    right:240px;
+    width:180px;
+    height:160px;
 }
 
-
-/* ========================= */
-/* ZONE ZINE */
-/* ========================= */
-
+/* ZINE */
 #zine{
-    bottom:276px;
-    left:384px;
-    width:192px;
-    height:204px;
+    bottom:230px;
+    left:320px;
+    width:160px;
+    height:170px;
 }
 
-
-/* ========================= */
-/* ZONE DESSIN */
-/* ========================= */
-
+/* DESSIN */
 #dessin{
-    bottom:276px;
-    right:384px;
-    width:192px;
-    height:204px;
+    bottom:230px;
+    right:320px;
+    width:160px;
+    height:170px;
 }
-
 </style>
 </head>
-
 
 <body>
 
 <div id="container">
 
-    <!-- IMAGE DE BASE -->
-    <img id="etoile" src="etoile.png" alt="">
+<img id="etoile" src="etoile.jpg" alt="">
 
+<div class="zone" id="portfolio"
+onmouseover="changeImage('etoile-portfolio.png')"
+onmouseout="resetImage()"
+onclick="location.href='portfolio.html'"></div>
 
-    <!-- PORTFOLIO -->
-    <div
-        class="zone"
-        id="portfolio"
-        onmouseover="changeImage('etoile-portfolio.png')"
-        onmouseout="resetImage()"
-        onclick="location.href='portfolio.html'">
-    </div>
+<div class="zone" id="cv"
+onmouseover="changeImage('etoile-cv.png')"
+onmouseout="resetImage()"
+onclick="location.href='cv.html'"></div>
 
+<div class="zone" id="volume"
+onmouseover="changeImage('etoile-volume.png')"
+onmouseout="resetImage()"
+onclick="location.href='volume.html'"></div>
 
-    <!-- CV -->
-    <div
-        class="zone"
-        id="cv"
-        onmouseover="changeImage('etoile-cv.png')"
-        onmouseout="resetImage()"
-        onclick="location.href='cv.html'">
-    </div>
+<div class="zone" id="zine"
+onmouseover="changeImage('etoile-zine.png')"
+onmouseout="resetImage()"
+onclick="location.href='zine.html'"></div>
 
-
-    <!-- VOLUME -->
-    <div
-        class="zone"
-        id="volume"
-        onmouseover="changeImage('etoile-volume.png')"
-        onmouseout="resetImage()"
-        onclick="location.href='volume.html'">
-    </div>
-
-
-    <!-- ZINE -->
-    <div
-        class="zone"
-        id="zine"
-        onmouseover="changeImage('etoile-zine.png')"
-        onmouseout="resetImage()"
-        onclick="location.href='zine.html'">
-    </div>
-
-
-    <!-- DESSIN -->
-    <div
-        class="zone"
-        id="dessin"
-        onmouseover="changeImage('etoile-dessin.png')"
-        onmouseout="resetImage()"
-        onclick="location.href='dessin.html'">
-    </div>
+<div class="zone" id="dessin"
+onmouseover="changeImage('etoile-dessin.png')"
+onmouseout="resetImage()"
+onclick="location.href='dessin.html'"></div>
 
 </div>
 
-
 <script>
-
-/* ========================= */
-/* PRÉCHARGEMENT DES IMAGES */
-/* ========================= */
-
 const images = [
     "etoile-portfolio.png",
     "etoile-cv.png",
@@ -177,36 +121,18 @@ const images = [
     "etoile-dessin.png"
 ];
 
-images.forEach(function(src){
-
+images.forEach(src => {
     const img = new Image();
-
     img.src = src;
-
 });
 
-
-/* ========================= */
-/* CHANGEMENT D'IMAGE */
-/* ========================= */
-
 function changeImage(image){
-
     document.getElementById("etoile").src = image;
-
 }
-
-
-/* ========================= */
-/* RETOUR À L'IMAGE DE BASE */
-/* ========================= */
 
 function resetImage(){
-
-    document.getElementById("etoile").src = "etoile.png";
-
+    document.getElementById("etoile").src = "etoile.jpg";
 }
-
 </script>
 
 </body>

@@ -174,7 +174,7 @@ body{
 
 
 /* =========================
-   FENÊTRES DES PHOTOS
+   CONTENEUR DES PHOTOS
 ========================= */
 
 #photos-popup{
@@ -188,24 +188,118 @@ body{
     z-index:200;
 }
 
+
+/* =========================
+   FENÊTRE PHOTO
+========================= */
+
 .fenetre-photo{
     position:absolute;
     background:white;
     border:1px solid black;
+    box-sizing:border-box;
+    width:420px;
+    height:420px;
+    min-width:220px;
+    min-height:180px;
+}
+
+
+/* =========================
+   BARRE SUPÉRIEURE
+========================= */
+
+.barre-fenetre{
+    height:30px;
+    border-bottom:1px solid black;
+    box-sizing:border-box;
+    cursor:move;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding-left:8px;
+    user-select:none;
+}
+
+.controles{
+    display:flex;
+    align-items:center;
+    height:100%;
+}
+
+.bouton{
+    width:28px;
+    height:28px;
+    border:none;
+    background:white;
+    font-family:"Times New Roman", serif;
+    font-size:18px;
+    line-height:28px;
+    text-align:center;
+    cursor:pointer;
+    padding:0;
+}
+
+.bouton:hover{
+    background:#eeeeee;
+}
+
+.pourcentage{
+    font-size:13px;
+    width:42px;
+    text-align:center;
+}
+
+.fermer-photo{
+    font-size:22px;
+    line-height:28px;
+    cursor:pointer;
+    color:black;
+    width:28px;
+    height:28px;
+    text-align:center;
+}
+
+.fermer-photo:hover{
+    opacity:0.5;
+}
+
+
+/* =========================
+   CONTENEUR DE L'IMAGE
+========================= */
+
+.conteneur-image{
+    width:100%;
+    height:calc(100% - 30px);
     padding:20px;
     box-sizing:border-box;
+    overflow:auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
+
+
+/* =========================
+   IMAGE
+========================= */
 
 .fenetre-photo img{
     display:block;
     width:auto;
     height:auto;
-    max-width:38vw;
-    max-height:60vh;
+    max-width:100%;
+    max-height:100%;
+    object-fit:contain;
+    transform-origin:center center;
+    transition:transform 0.15s ease;
 }
 
 
-/* Position des deux fenêtres */
+/* =========================
+   POSITIONS INITIALES
+========================= */
 
 #fenetre-1{
     top:12vh;
@@ -219,21 +313,50 @@ body{
 
 
 /* =========================
-   BOUTONS FERMER
+   COINS DE REDIMENSIONNEMENT
 ========================= */
 
-.fermer-photo{
+.resize{
     position:absolute;
-    top:3px;
-    right:8px;
-    font-size:22px;
-    line-height:22px;
-    cursor:pointer;
-    color:black;
+    width:12px;
+    height:12px;
+    z-index:20;
 }
 
-.fermer-photo:hover{
-    opacity:0.5;
+
+/* coin haut gauche */
+
+.resize-tl{
+    top:-2px;
+    left:-2px;
+    cursor:nwse-resize;
+}
+
+
+/* coin haut droit */
+
+.resize-tr{
+    top:-2px;
+    right:-2px;
+    cursor:nesw-resize;
+}
+
+
+/* coin bas gauche */
+
+.resize-bl{
+    bottom:-2px;
+    left:-2px;
+    cursor:nesw-resize;
+}
+
+
+/* coin bas droit */
+
+.resize-br{
+    bottom:-2px;
+    right:-2px;
+    cursor:nwse-resize;
 }
 
 </style>
@@ -267,7 +390,7 @@ body{
         </div>
 
 
-        <!-- MENU DES DESSINS -->
+        <!-- DESSINS -->
 
         <div class="menu-horizontal">
 
@@ -350,13 +473,15 @@ body{
 
 
 <!-- =========================
-     DEUX FENÊTRES PHOTOS
+     FENÊTRES PHOTOS
 ========================= -->
 
 <div id="photos-popup">
 
 
-    <!-- PHOTO 1 -->
+    <!-- =====================
+         FENÊTRE 1
+    ====================== -->
 
     <div
         id="fenetre-1"
@@ -364,21 +489,93 @@ body{
     >
 
         <div
-            class="fermer-photo"
-            onclick="fermerPhoto(1)"
+            class="barre-fenetre"
+            onmousedown="commencerDeplacement(event, 1)"
         >
-            ×
+
+            <span></span>
+
+            <div class="controles">
+
+                <button
+                    class="bouton"
+                    onclick="zoomPhoto(event, 1, 1.15)"
+                >
+                    +
+                </button>
+
+                <div
+                    id="pourcentage-1"
+                    class="pourcentage"
+                >
+                    100%
+                </div>
+
+                <button
+                    class="bouton"
+                    onclick="zoomPhoto(event, 1, 0.87)"
+                >
+                    −
+                </button>
+
+                <button
+                    class="bouton"
+                    onclick="resetZoom(event, 1)"
+                >
+                    1:1
+                </button>
+
+                <div
+                    class="fermer-photo"
+                    onclick="fermerPhoto(1)"
+                >
+                    ×
+                </div>
+
+            </div>
+
         </div>
 
-        <img
-            src="successives-1.jpg"
-            alt="Photographie du processus de redessin"
-        >
+
+        <div class="conteneur-image">
+
+            <img
+                id="image-successives-1"
+                src="successives-1.jpg"
+                alt="Photographie du processus de redessin"
+            >
+
+        </div>
+
+
+        <!-- COINS -->
+
+        <div
+            class="resize resize-tl"
+            onmousedown="commencerRedimensionnement(event, 1, 'tl')"
+        ></div>
+
+        <div
+            class="resize resize-tr"
+            onmousedown="commencerRedimensionnement(event, 1, 'tr')"
+        ></div>
+
+        <div
+            class="resize resize-bl"
+            onmousedown="commencerRedimensionnement(event, 1, 'bl')"
+        ></div>
+
+        <div
+            class="resize resize-br"
+            onmousedown="commencerRedimensionnement(event, 1, 'br')"
+        ></div>
 
     </div>
 
 
-    <!-- PHOTO 2 -->
+    <!-- =====================
+         FENÊTRE 2
+    ====================== -->
 
     <div
         id="fenetre-2"
@@ -386,16 +583,86 @@ body{
     >
 
         <div
-            class="fermer-photo"
-            onclick="fermerPhoto(2)"
+            class="barre-fenetre"
+            onmousedown="commencerDeplacement(event, 2)"
         >
-            ×
+
+            <span></span>
+
+            <div class="controles">
+
+                <button
+                    class="bouton"
+                    onclick="zoomPhoto(event, 2, 1.15)"
+                >
+                    +
+                </button>
+
+                <div
+                    id="pourcentage-2"
+                    class="pourcentage"
+                >
+                    100%
+                </div>
+
+                <button
+                    class="bouton"
+                    onclick="zoomPhoto(event, 2, 0.87)"
+                >
+                    −
+                </button>
+
+                <button
+                    class="bouton"
+                    onclick="resetZoom(event, 2)"
+                >
+                    1:1
+                </button>
+
+                <div
+                    class="fermer-photo"
+                    onclick="fermerPhoto(2)"
+                >
+                    ×
+                </div>
+
+            </div>
+
         </div>
 
-        <img
-            src="successives-2.jpg"
-            alt="Photographie du processus de redessin"
-        >
+
+        <div class="conteneur-image">
+
+            <img
+                id="image-successives-2"
+                src="successives-2.jpg"
+                alt="Photographie du processus de redessin"
+            >
+
+        </div>
+
+
+        <!-- COINS -->
+
+        <div
+            class="resize resize-tl"
+            onmousedown="commencerRedimensionnement(event, 2, 'tl')"
+        ></div>
+
+        <div
+            class="resize resize-tr"
+            onmousedown="commencerRedimensionnement(event, 2, 'tr')"
+        ></div>
+
+        <div
+            class="resize resize-bl"
+            onmousedown="commencerRedimensionnement(event, 2, 'bl')"
+        ></div>
+
+        <div
+            class="resize resize-br"
+            onmousedown="commencerRedimensionnement(event, 2, 'br')"
+        ></div>
 
     </div>
 
@@ -404,8 +671,9 @@ body{
 
 <script>
 
+
 /* =========================
-   LISTE DES DESSINS
+   DESSINS
 ========================= */
 
 const dessins = [
@@ -486,7 +754,7 @@ function imagePrecedente(){
 
 
 /* =========================
-   OUVRIR LES DEUX PHOTOS
+   OUVRIR LES PHOTOS
 ========================= */
 
 function ouvrirPhotos(){
@@ -526,30 +794,427 @@ function fermerPhoto(numero){
 
 
 /* =========================
-   NAVIGATION AU CLAVIER
+   ZOOM
 ========================= */
 
-document.addEventListener("keydown", function(event){
+let zooms = {
+    1: 1,
+    2: 1
+};
 
-    const popupOuvert =
-        document.getElementById("popup").style.display === "flex";
+
+function zoomPhoto(event, numero, facteur){
+
+    event.stopPropagation();
+
+    let nouveauZoom =
+        zooms[numero] * facteur;
 
 
-    if(popupOuvert && event.key === "ArrowRight"){
-        imageSuivante();
+    if(nouveauZoom < 0.5){
+        nouveauZoom = 0.5;
+    }
+
+    if(nouveauZoom > 4){
+        nouveauZoom = 4;
     }
 
 
-    if(popupOuvert && event.key === "ArrowLeft"){
-        imagePrecedente();
+    zooms[numero] = nouveauZoom;
+
+    appliquerZoom(numero);
+}
+
+
+function appliquerZoom(numero){
+
+    const image =
+        document.getElementById(
+            "image-successives-" + numero
+        );
+
+
+    image.style.transform =
+        "scale(" + zooms[numero] + ")";
+
+
+    document.getElementById(
+        "pourcentage-" + numero
+    ).textContent =
+        Math.round(zooms[numero] * 100) + "%";
+}
+
+
+function resetZoom(event, numero){
+
+    event.stopPropagation();
+
+    zooms[numero] = 1;
+
+    appliquerZoom(numero);
+}
+
+
+/* =========================
+   DÉPLACEMENT
+========================= */
+
+let fenetreEnDeplacement = null;
+
+let decalageX = 0;
+let decalageY = 0;
+
+
+function commencerDeplacement(event, numero){
+
+    if(
+        event.target.closest("button") ||
+        event.target.closest(".fermer-photo")
+    ){
+        return;
     }
 
 
-    if(popupOuvert && event.key === "Escape"){
-        fermerPopup();
+    const fenetre =
+        document.getElementById("fenetre-" + numero);
+
+
+    fenetreEnDeplacement = fenetre;
+
+
+    const rectangle =
+        fenetre.getBoundingClientRect();
+
+
+    decalageX =
+        event.clientX - rectangle.left;
+
+    decalageY =
+        event.clientY - rectangle.top;
+
+
+    fenetre.style.left =
+        rectangle.left + "px";
+
+    fenetre.style.top =
+        rectangle.top + "px";
+
+    fenetre.style.right =
+        "auto";
+
+
+    document.addEventListener(
+        "mousemove",
+        deplacerFenetre
+    );
+
+    document.addEventListener(
+        "mouseup",
+        terminerDeplacement
+    );
+
+
+    event.preventDefault();
+}
+
+
+function deplacerFenetre(event){
+
+    if(!fenetreEnDeplacement){
+        return;
     }
 
-});
+
+    fenetreEnDeplacement.style.left =
+        (event.clientX - decalageX) + "px";
+
+    fenetreEnDeplacement.style.top =
+        (event.clientY - decalageY) + "px";
+}
+
+
+function terminerDeplacement(){
+
+    fenetreEnDeplacement = null;
+
+
+    document.removeEventListener(
+        "mousemove",
+        deplacerFenetre
+    );
+
+    document.removeEventListener(
+        "mouseup",
+        terminerDeplacement
+    );
+}
+
+
+/* =========================
+   REDIMENSIONNEMENT
+========================= */
+
+let fenetreRedimensionnement = null;
+
+let coinRedimensionnement = null;
+
+let departX = 0;
+let departY = 0;
+
+let largeurDepart = 0;
+let hauteurDepart = 0;
+
+let gaucheDepart = 0;
+let hautDepart = 0;
+
+
+/*
+   Ratio de la fenêtre.
+   Il est calculé à partir de la taille
+   initiale de la fenêtre.
+*/
+
+const ratioFenetre = 1;
+
+
+function commencerRedimensionnement(
+    event,
+    numero,
+    coin
+){
+
+    event.stopPropagation();
+
+    event.preventDefault();
+
+
+    const fenetre =
+        document.getElementById("fenetre-" + numero);
+
+
+    fenetreRedimensionnement = fenetre;
+
+    coinRedimensionnement = coin;
+
+
+    const rectangle =
+        fenetre.getBoundingClientRect();
+
+
+    departX = event.clientX;
+    departY = event.clientY;
+
+
+    largeurDepart =
+        rectangle.width;
+
+    hauteurDepart =
+        rectangle.height;
+
+
+    gaucheDepart =
+        rectangle.left;
+
+    hautDepart =
+        rectangle.top;
+
+
+    document.addEventListener(
+        "mousemove",
+        redimensionnerFenetre
+    );
+
+    document.addEventListener(
+        "mouseup",
+        terminerRedimensionnement
+    );
+}
+
+
+function redimensionnerFenetre(event){
+
+    if(!fenetreRedimensionnement){
+        return;
+    }
+
+
+    let deltaX =
+        event.clientX - departX;
+
+    let deltaY =
+        event.clientY - departY;
+
+
+    /*
+       On utilise la plus grande variation
+       pour conserver une fenêtre carrée.
+    */
+
+    let variation =
+        Math.abs(deltaX) > Math.abs(deltaY)
+        ? deltaX
+        : deltaY;
+
+
+    let nouvelleLargeur =
+        largeurDepart;
+
+    let nouvelleHauteur =
+        hauteurDepart;
+
+    let nouvelleGauche =
+        gaucheDepart;
+
+    let nouveauHaut =
+        hautDepart;
+
+
+    /* coin bas droit */
+
+    if(coinRedimensionnement === "br"){
+
+        nouvelleLargeur =
+            largeurDepart + variation;
+
+        nouvelleHauteur =
+            hauteurDepart + variation;
+    }
+
+
+    /* coin bas gauche */
+
+    if(coinRedimensionnement === "bl"){
+
+        nouvelleLargeur =
+            largeurDepart - variation;
+
+        nouvelleHauteur =
+            hauteurDepart + variation;
+
+        nouvelleGauche =
+            gaucheDepart + variation;
+    }
+
+
+    /* coin haut droit */
+
+    if(coinRedimensionnement === "tr"){
+
+        nouvelleLargeur =
+            largeurDepart + variation;
+
+        nouvelleHauteur =
+            hauteurDepart - variation;
+
+        nouveauHaut =
+            hautDepart + variation;
+    }
+
+
+    /* coin haut gauche */
+
+    if(coinRedimensionnement === "tl"){
+
+        nouvelleLargeur =
+            largeurDepart - variation;
+
+        nouvelleHauteur =
+            hauteurDepart - variation;
+
+        nouvelleGauche =
+            gaucheDepart + variation;
+
+        nouveauHaut =
+            hautDepart + variation;
+    }
+
+
+    /* taille minimale */
+
+    if(nouvelleLargeur < 220){
+        nouvelleLargeur = 220;
+    }
+
+    if(nouvelleHauteur < 180){
+        nouvelleHauteur = 180;
+    }
+
+
+    /* appliquer */
+
+    fenetreRedimensionnement.style.width =
+        nouvelleLargeur + "px";
+
+    fenetreRedimensionnement.style.height =
+        nouvelleHauteur + "px";
+
+    fenetreRedimensionnement.style.left =
+        nouvelleGauche + "px";
+
+    fenetreRedimensionnement.style.top =
+        nouveauHaut + "px";
+
+    fenetreRedimensionnement.style.right =
+        "auto";
+}
+
+
+function terminerRedimensionnement(){
+
+    fenetreRedimensionnement = null;
+
+    coinRedimensionnement = null;
+
+
+    document.removeEventListener(
+        "mousemove",
+        redimensionnerFenetre
+    );
+
+    document.removeEventListener(
+        "mouseup",
+        terminerRedimensionnement
+    );
+}
+
+
+/* =========================
+   CLAVIER
+========================= */
+
+document.addEventListener(
+    "keydown",
+    function(event){
+
+        const popupOuvert =
+            document.getElementById("popup").style.display === "flex";
+
+
+        if(
+            popupOuvert &&
+            event.key === "ArrowRight"
+        ){
+            imageSuivante();
+        }
+
+
+        if(
+            popupOuvert &&
+            event.key === "ArrowLeft"
+        ){
+            imagePrecedente();
+        }
+
+
+        if(
+            popupOuvert &&
+            event.key === "Escape"
+        ){
+            fermerPopup();
+        }
+
+    }
+);
 
 </script>
 

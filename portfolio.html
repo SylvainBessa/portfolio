@@ -42,6 +42,12 @@
         width: min(900px, calc(100vw - 40px));
         height: auto;
         margin: 0 auto 20px;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+
+    .page.visible {
+        opacity: 1;
     }
 
     @media (max-width: 600px) {
@@ -77,39 +83,77 @@
     pdfjsLib.GlobalWorkerOptions.workerSrc =
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
+
+    async function renderPage(pdf, pageNumber) {
+        const page = await pdf.getPage(pageNumber);
+
+        const originalViewport = page.getViewport({
+            scale: 1
+        });
+
+        const maxWidth = Math.min(
+            900,
+            window.innerWidth - 40
+        );
+
+        const scale = maxWidth / originalViewport.width;
+
+        const viewport = page.getViewport({
+            scale: scale
+        });
+
+        const canvas = document.createElement("canvas");
+
+        canvas.className = "page";
+
+        canvas.width = Math.ceil(viewport.width);
+        canvas.height = Math.ceil(viewport.height);
+
+        container.appendChild(canvas);
+
+        const context = canvas.getContext("2d", {
+            alpha: false
+        });
+
+        await page.render({
+            canvasContext: context,
+            viewport: viewport
+        }).promise;
+
+        return canvas;
+    }
+
+
     async function loadPDF() {
-        const pdf = await pdfjsLib.getDocument(pdfFile).promise;
+        const pdf = await pdfjsLib.getDocument({
+            url: pdfFile,
+            disableAutoFetch: false,
+            disableStream: false
+        }).promise;
 
-        for (let i = 1; i <= pdf.numPages; i++) {
-            const page = await pdf.getPage(i);
 
-            const originalViewport = page.getViewport({ scale: 1 });
+        for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
 
-            const maxWidth = Math.min(
-                900,
-                window.innerWidth - 40
+            const canvas = await renderPage(
+                pdf,
+                pageNumber
             );
 
-            const scale = maxWidth / originalViewport.width;
-            const viewport = page.getViewport({ scale });
 
-            const canvas = document.createElement("canvas");
-            const context = canvas.getContext("2d");
+            await new Promise(resolve => {
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(resolve);
+                });
+            });
 
-            canvas.className = "page";
-            canvas.width = viewport.width;
-            canvas.height = viewport.height;
 
-            container.appendChild(canvas);
-
-            await page.render({
-                canvasContext: context,
-                viewport: viewport
-            }).promise;
+            canvas.classList.add("visible");
         }
     }
 
+
     loadPDF();
+
 </script>
 ```
 

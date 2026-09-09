@@ -13,7 +13,7 @@
     body {
         margin: 0;
         padding: 0;
-        background: #fff;
+        background: white;
     }
 
     body {
@@ -42,11 +42,8 @@
         width: min(900px, calc(100vw - 40px));
         height: auto;
         margin: 0 auto 20px;
-
         opacity: 0;
-
-        contain: strict;
-        content-visibility: auto;
+        contain: layout paint;
     }
 
     .page.ready {
@@ -85,38 +82,25 @@
 
 <script>
     const PDF_FILE = "SYLVAIN_BESSA_dossiervisuel_léger.pdf";
-
     const MAX_WIDTH = 900;
     const MAX_PIXEL_RATIO = 2;
-
-    /*
-     * Nombre maximum de pages rendues simultanément.
-     * 2 est généralement un bon compromis entre
-     * vitesse et consommation CPU.
-     */
-    const MAX_CONCURRENT_RENDERS = 2;
-
-    /*
-     * Nombre de pages anticipées.
-     */
     const PRELOAD_DISTANCE = 4;
+    const MAX_CONCURRENT_RENDERS = 2;
 
     const container = document.getElementById("pdf");
 
     pdfjsLib.GlobalWorkerOptions.workerSrc =
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
-
     let pdf = null;
-
-    const pages = new Map();
-    const jobs = new Map();
-
     let activeRenders = 0;
+
+    const renderedPages = new Map();
+    const queuedPages = new Set();
     const queue = [];
 
 
-    function displayWidth() {
+    function getWidth() {
         return Math.min(
             MAX_WIDTH,
             window.innerWidth - 40
@@ -124,7 +108,7 @@
     }
 
 
-    function pixelRatio() {
+    function getPixelRatio() {
         return Math.min(
             window.devicePixelRatio || 1,
             MAX_PIXEL_RATIO
@@ -132,52 +116,41 @@
     }
 
 
-    function enqueue(pageNumber, priority = false) {
-
+    function addToQueue(pageNumber, priority = false) {
         if (
-            pages.has(pageNumber) ||
-            jobs.has(pageNumber)
+            pageNumber < 1 ||
+            pageNumber > pdf.numPages ||
+            renderedPages.has(pageNumber) ||
+            queuedPages.has(pageNumber)
         ) {
             return;
         }
 
-        const job = {
-            pageNumber,
-            priority
-        };
+        queuedPages.add(pageNumber);
 
         if (priority) {
-            queue.unshift(job);
+            queue.unshift(pageNumber);
         } else {
-            queue.push(job);
+            queue.push(pageNumber);
         }
-
-        jobs.set(pageNumber, job);
 
         processQueue();
     }
 
 
     function processQueue() {
-
         while (
             activeRenders < MAX_CONCURRENT_RENDERS &&
-            queue.length
+            queue.length > 0
         ) {
-
-            const job = queue.shift();
+            const pageNumber = queue.shift();
 
             activeRenders++;
 
-            renderPage(job.pageNumber)
+            renderPage(pageNumber)
                 .finally(() => {
-
                     activeRenders--;
-
-                    jobs.delete(
-                        job.pageNumber
-                    );
-
+                    queuedPages.delete(pageNumber);
                     processQueue();
                 });
         }
@@ -185,80 +158,39 @@
 
 
     async function renderPage(pageNumber) {
+        const page = await pdf.getPage(pageNumber);
 
-        const page =
-            await pdf.getPage(pageNumber);
+        const baseViewport = page.getViewport({
+            scale: 1
+        });
 
+        const width = getWidth();
 
-        const baseViewport =
-            page.getViewport({
-                scale: 1
-            });
+        const scale = width / baseViewport.width;
 
+        const viewport = page.getViewport({
+            scale: scale
+        });
 
-        const width =
-            displayWidth();
+        const ratio = getPixelRatio();
 
-
-        const scale =
-            width / baseViewport.width;
-
-
-        const viewport =
-            page.getViewport({
-                scale
-            });
-
-
-        const ratio =
-            pixelRatio();
-
-
-        const canvas =
-            document.createElement("canvas");
-
+        const canvas = document.createElement("canvas");
 
         canvas.className = "page";
+        canvas.dataset.page = pageNumber;
 
-        canvas.dataset.page =
-            pageNumber;
+        canvas.style.width = `${viewport.width}px`;
+        canvas.style.height = `${viewport.height}px`;
 
-
-        /*
-         * On réserve l'espace immédiatement.
-         * Le document ne saute donc pas lorsque
-         * la page apparaît.
-         */
-        canvas.style.width =
-            `${viewport.width}px`;
-
-        canvas.style.height =
-            `${viewport.height}px`;
-
-
-        canvas.width =
-            Math.ceil(
-                viewport.width * ratio
-            );
-
-        canvas.height =
-            Math.ceil(
-                viewport.height * ratio
-            );
-
+        canvas.width = Math.ceil(viewport.width * ratio);
+        canvas.height = Math.ceil(viewport.height * ratio);
 
         container.appendChild(canvas);
 
-
-        const context =
-            canvas.getContext(
-                "2d",
-                {
-                    alpha: false,
-                    desynchronized: true
-                }
-            );
-
+        const context = canvas.getContext("2d", {
+            alpha: false,
+            desynchronized: true
+        });
 
         context.setTransform(
             ratio,
@@ -269,206 +201,96 @@
             0
         );
 
-
         await page.render({
             canvasContext: context,
             viewport: viewport
         }).promise;
 
+        renderedPages.set(pageNumber, canvas);
 
-        pages.set(
-            pageNumber,
-            canvas
-        );
-
-
-        /*
-         * La page entière est maintenant
-         * disponible.
-         */
         canvas.classList.add("ready");
-
 
         return canvas;
     }
 
 
-    function preloadAround(pageNumber) {
-
-        const start =
-            Math.max(1, pageNumber);
-
-        const end =
-            Math.min(
-                pdf.numPages,
-                pageNumber + PRELOAD_DISTANCE
-            );
-
+    function preloadPages(startPage) {
+        const endPage = Math.min(
+            pdf.numPages,
+            startPage + PRELOAD_DISTANCE - 1
+        );
 
         for (
-            let i = start;
-            i <= end;
-            i++
+            let pageNumber = startPage;
+            pageNumber <= endPage;
+            pageNumber++
         ) {
-            enqueue(i);
+            addToQueue(pageNumber);
         }
     }
 
 
     function observePages() {
-
-        const observer =
-            new IntersectionObserver(
-                entries => {
-
-                    for (
-                        const entry
-                        of entries
-                    ) {
-
-                        if (
-                            !entry.isIntersecting
-                        ) {
-                            continue;
-                        }
-
-
-                        const pageNumber =
-                            Number(
-                                entry.target.dataset.page
-                            );
-
-
-                        preloadAround(
-                            pageNumber + 1
-                        );
+        const observer = new IntersectionObserver(
+            entries => {
+                for (const entry of entries) {
+                    if (!entry.isIntersecting) {
+                        continue;
                     }
 
-                },
-                {
-                    rootMargin:
-                        "2500px 0px 2500px 0px",
+                    const pageNumber = Number(
+                        entry.target.dataset.page
+                    );
 
-                    threshold: 0
+                    preloadPages(pageNumber + 1);
                 }
-            );
-
-
-        const observeNewPages =
-            () => {
-
-                for (
-                    const canvas
-                    of pages.values()
-                ) {
-
-                    if (
-                        !canvas.dataset.observed
-                    ) {
-
-                        canvas.dataset.observed =
-                            "true";
-
-                        observer.observe(
-                            canvas
-                        );
-                    }
-                }
-            };
-
-
-        observeNewPages();
-
-
-        /*
-         * On vérifie uniquement lorsque le
-         * navigateur est disponible pour le faire.
-         */
-        function check() {
-
-            observeNewPages();
-
-            if (
-                "requestIdleCallback"
-                in window
-            ) {
-
-                requestIdleCallback(
-                    check
-                );
-
-            } else {
-
-                setTimeout(
-                    check,
-                    1000
-                );
+            },
+            {
+                rootMargin: "2500px 0px 2500px 0px",
+                threshold: 0
             }
+        );
+
+        function observeNewPages() {
+            for (const canvas of renderedPages.values()) {
+                if (canvas.dataset.observed) {
+                    continue;
+                }
+
+                canvas.dataset.observed = "true";
+                observer.observe(canvas);
+            }
+
+            requestAnimationFrame(observeNewPages);
         }
 
-
-        check();
+        observeNewPages();
     }
 
 
     async function start() {
+        pdf = await pdfjsLib.getDocument({
+            url: PDF_FILE,
+            disableStream: false,
+            disableAutoFetch: false,
+            useWorkerFetch: true,
+            isOffscreenCanvasSupported: true
+        }).promise;
 
-        pdf =
-            await pdfjsLib.getDocument({
+        addToQueue(1, true);
 
-                url: PDF_FILE,
-
-                disableStream: false,
-
-                disableAutoFetch: false,
-
-                useWorkerFetch: true,
-
-                isOffscreenCanvasSupported: true
-
-            }).promise;
-
-
-        /*
-         * PAGE 1 :
-         * priorité absolue.
-         */
-        enqueue(
-            1,
-            true
-        );
-
-
-        /*
-         * On attend uniquement la page 1.
-         */
-        while (
-            !pages.has(1)
-        ) {
-
-            await new Promise(
-                resolve =>
-                    setTimeout(
-                        resolve,
-                        10
-                    )
+        while (!renderedPages.has(1)) {
+            await new Promise(resolve =>
+                requestAnimationFrame(resolve)
             );
         }
 
-
-        /*
-         * Préparation immédiate des pages
-         * suivantes.
-         */
-        preloadAround(2);
-
-
+        preloadPages(2);
         observePages();
     }
 
 
     start();
-
 </script>
 ```
 

@@ -1,15 +1,118 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="fr">
+
 <head>
-<meta charset="UTF-8">
-<title>Portfolio</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio</title>
+
+```
+<style>
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+        background: white;
+    }
+
+    body {
+        font-family: "Times New Roman", serif;
+        overflow-x: hidden;
+    }
+
+    #retour {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 1000;
+        color: blue;
+        font-size: 18px;
+        text-decoration: underline;
+    }
+
+    #pdf {
+        width: 100%;
+        padding: 70px 0 40px;
+        box-sizing: border-box;
+    }
+
+    .page {
+        display: block;
+        width: min(900px, calc(100vw - 40px));
+        height: auto;
+        margin: 0 auto 20px;
+    }
+
+    @media (max-width: 600px) {
+        #retour {
+            top: 15px;
+            left: 15px;
+            font-size: 16px;
+        }
+
+        .page {
+            width: calc(100vw - 20px);
+            margin-bottom: 10px;
+        }
+    }
+</style>
+```
+
 </head>
 
 <body>
 
-<h1>Portfolio</h1>
+```
+<a id="retour" href="index.html">Retour</a>
 
-<a href="index.html">Retour</a>
+<main id="pdf"></main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+<script>
+    const pdfFile = "SYLVAIN_BESSA_dossiervisuel.pdf";
+    const container = document.getElementById("pdf");
+
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+    async function loadPDF() {
+        const pdf = await pdfjsLib.getDocument(pdfFile).promise;
+
+        for (let i = 1; i <= pdf.numPages; i++) {
+            const page = await pdf.getPage(i);
+
+            const originalViewport = page.getViewport({ scale: 1 });
+
+            const maxWidth = Math.min(
+                900,
+                window.innerWidth - 40
+            );
+
+            const scale = maxWidth / originalViewport.width;
+            const viewport = page.getViewport({ scale });
+
+            const canvas = document.createElement("canvas");
+            const context = canvas.getContext("2d");
+
+            canvas.className = "page";
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+
+            container.appendChild(canvas);
+
+            await page.render({
+                canvasContext: context,
+                viewport: viewport
+            }).promise;
+        }
+    }
+
+    loadPDF();
+</script>
+```
 
 </body>
+
 </html>

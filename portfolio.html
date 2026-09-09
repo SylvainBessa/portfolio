@@ -13,12 +13,12 @@
     body {
         margin: 0;
         padding: 0;
-        background: white;
+        background: #fff;
     }
 
     body {
-        font-family: "Times New Roman", serif;
         overflow-x: hidden;
+        font-family: "Times New Roman", serif;
     }
 
     #retour {
@@ -42,11 +42,14 @@
         width: min(900px, calc(100vw - 40px));
         height: auto;
         margin: 0 auto 20px;
+
         opacity: 0;
-        transition: opacity 0.5s ease;
+
+        contain: strict;
+        content-visibility: auto;
     }
 
-    .page.visible {
+    .page.ready {
         opacity: 1;
     }
 
@@ -55,6 +58,10 @@
             top: 15px;
             left: 15px;
             font-size: 16px;
+        }
+
+        #pdf {
+            padding-top: 60px;
         }
 
         .page {
@@ -77,82 +84,390 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
 <script>
-    const pdfFile = "SYLVAIN_BESSA_dossiervisuel.pdf";
+    const PDF_FILE = "SYLVAIN_BESSA_dossiervisuel.pdf";
+
+    const MAX_WIDTH = 900;
+    const MAX_PIXEL_RATIO = 2;
+
+    /*
+     * Nombre maximum de pages rendues simultanément.
+     * 2 est généralement un bon compromis entre
+     * vitesse et consommation CPU.
+     */
+    const MAX_CONCURRENT_RENDERS = 2;
+
+    /*
+     * Nombre de pages anticipées.
+     */
+    const PRELOAD_DISTANCE = 4;
+
     const container = document.getElementById("pdf");
 
     pdfjsLib.GlobalWorkerOptions.workerSrc =
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
 
-    async function renderPage(pdf, pageNumber) {
-        const page = await pdf.getPage(pageNumber);
+    let pdf = null;
 
-        const originalViewport = page.getViewport({
-            scale: 1
-        });
+    const pages = new Map();
+    const jobs = new Map();
 
-        const maxWidth = Math.min(
-            900,
+    let activeRenders = 0;
+    const queue = [];
+
+
+    function displayWidth() {
+        return Math.min(
+            MAX_WIDTH,
             window.innerWidth - 40
         );
+    }
 
-        const scale = maxWidth / originalViewport.width;
 
-        const viewport = page.getViewport({
-            scale: scale
-        });
+    function pixelRatio() {
+        return Math.min(
+            window.devicePixelRatio || 1,
+            MAX_PIXEL_RATIO
+        );
+    }
 
-        const canvas = document.createElement("canvas");
+
+    function enqueue(pageNumber, priority = false) {
+
+        if (
+            pages.has(pageNumber) ||
+            jobs.has(pageNumber)
+        ) {
+            return;
+        }
+
+        const job = {
+            pageNumber,
+            priority
+        };
+
+        if (priority) {
+            queue.unshift(job);
+        } else {
+            queue.push(job);
+        }
+
+        jobs.set(pageNumber, job);
+
+        processQueue();
+    }
+
+
+    function processQueue() {
+
+        while (
+            activeRenders < MAX_CONCURRENT_RENDERS &&
+            queue.length
+        ) {
+
+            const job = queue.shift();
+
+            activeRenders++;
+
+            renderPage(job.pageNumber)
+                .finally(() => {
+
+                    activeRenders--;
+
+                    jobs.delete(
+                        job.pageNumber
+                    );
+
+                    processQueue();
+                });
+        }
+    }
+
+
+    async function renderPage(pageNumber) {
+
+        const page =
+            await pdf.getPage(pageNumber);
+
+
+        const baseViewport =
+            page.getViewport({
+                scale: 1
+            });
+
+
+        const width =
+            displayWidth();
+
+
+        const scale =
+            width / baseViewport.width;
+
+
+        const viewport =
+            page.getViewport({
+                scale
+            });
+
+
+        const ratio =
+            pixelRatio();
+
+
+        const canvas =
+            document.createElement("canvas");
+
 
         canvas.className = "page";
 
-        canvas.width = Math.ceil(viewport.width);
-        canvas.height = Math.ceil(viewport.height);
+        canvas.dataset.page =
+            pageNumber;
+
+
+        /*
+         * On réserve l'espace immédiatement.
+         * Le document ne saute donc pas lorsque
+         * la page apparaît.
+         */
+        canvas.style.width =
+            `${viewport.width}px`;
+
+        canvas.style.height =
+            `${viewport.height}px`;
+
+
+        canvas.width =
+            Math.ceil(
+                viewport.width * ratio
+            );
+
+        canvas.height =
+            Math.ceil(
+                viewport.height * ratio
+            );
+
 
         container.appendChild(canvas);
 
-        const context = canvas.getContext("2d", {
-            alpha: false
-        });
+
+        const context =
+            canvas.getContext(
+                "2d",
+                {
+                    alpha: false,
+                    desynchronized: true
+                }
+            );
+
+
+        context.setTransform(
+            ratio,
+            0,
+            0,
+            ratio,
+            0,
+            0
+        );
+
 
         await page.render({
             canvasContext: context,
             viewport: viewport
         }).promise;
 
+
+        pages.set(
+            pageNumber,
+            canvas
+        );
+
+
+        /*
+         * La page entière est maintenant
+         * disponible.
+         */
+        canvas.classList.add("ready");
+
+
         return canvas;
     }
 
 
-    async function loadPDF() {
-        const pdf = await pdfjsLib.getDocument({
-            url: pdfFile,
-            disableAutoFetch: false,
-            disableStream: false
-        }).promise;
+    function preloadAround(pageNumber) {
 
+        const start =
+            Math.max(1, pageNumber);
 
-        for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
-
-            const canvas = await renderPage(
-                pdf,
-                pageNumber
+        const end =
+            Math.min(
+                pdf.numPages,
+                pageNumber + PRELOAD_DISTANCE
             );
 
 
-            await new Promise(resolve => {
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(resolve);
-                });
-            });
-
-
-            canvas.classList.add("visible");
+        for (
+            let i = start;
+            i <= end;
+            i++
+        ) {
+            enqueue(i);
         }
     }
 
 
-    loadPDF();
+    function observePages() {
+
+        const observer =
+            new IntersectionObserver(
+                entries => {
+
+                    for (
+                        const entry
+                        of entries
+                    ) {
+
+                        if (
+                            !entry.isIntersecting
+                        ) {
+                            continue;
+                        }
+
+
+                        const pageNumber =
+                            Number(
+                                entry.target.dataset.page
+                            );
+
+
+                        preloadAround(
+                            pageNumber + 1
+                        );
+                    }
+
+                },
+                {
+                    rootMargin:
+                        "2500px 0px 2500px 0px",
+
+                    threshold: 0
+                }
+            );
+
+
+        const observeNewPages =
+            () => {
+
+                for (
+                    const canvas
+                    of pages.values()
+                ) {
+
+                    if (
+                        !canvas.dataset.observed
+                    ) {
+
+                        canvas.dataset.observed =
+                            "true";
+
+                        observer.observe(
+                            canvas
+                        );
+                    }
+                }
+            };
+
+
+        observeNewPages();
+
+
+        /*
+         * On vérifie uniquement lorsque le
+         * navigateur est disponible pour le faire.
+         */
+        function check() {
+
+            observeNewPages();
+
+            if (
+                "requestIdleCallback"
+                in window
+            ) {
+
+                requestIdleCallback(
+                    check
+                );
+
+            } else {
+
+                setTimeout(
+                    check,
+                    1000
+                );
+            }
+        }
+
+
+        check();
+    }
+
+
+    async function start() {
+
+        pdf =
+            await pdfjsLib.getDocument({
+
+                url: PDF_FILE,
+
+                disableStream: false,
+
+                disableAutoFetch: false,
+
+                useWorkerFetch: true,
+
+                isOffscreenCanvasSupported: true
+
+            }).promise;
+
+
+        /*
+         * PAGE 1 :
+         * priorité absolue.
+         */
+        enqueue(
+            1,
+            true
+        );
+
+
+        /*
+         * On attend uniquement la page 1.
+         */
+        while (
+            !pages.has(1)
+        ) {
+
+            await new Promise(
+                resolve =>
+                    setTimeout(
+                        resolve,
+                        10
+                    )
+            );
+        }
+
+
+        /*
+         * Préparation immédiate des pages
+         * suivantes.
+         */
+        preloadAround(2);
+
+
+        observePages();
+    }
+
+
+    start();
 
 </script>
 ```

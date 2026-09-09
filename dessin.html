@@ -193,17 +193,17 @@ body{
    FENÊTRE PHOTO
 ========================= */
 
-.fenetre-photo {
-    position: fixed;
-    width: auto;
-    height: auto;
-    max-width: 76vw;
-    max-height: 76vh;
-    overflow: hidden;
+.fenetre-photo{
+    position:fixed;
+    width:auto;
+    height:auto;
+    max-width:76vw;
+    max-height:76vh;
+    overflow:hidden;
 
-    background: white;
-    border: 1px solid black;
-    box-sizing: border-box;
+    background:white;
+    border:1px solid black;
+    box-sizing:border-box;
 }
 
 
@@ -277,10 +277,13 @@ body{
     height:calc(100% - 30px);
     padding:20px;
     box-sizing:border-box;
-    overflow:auto;
+    overflow:hidden;
     display:flex;
     align-items:center;
     justify-content:center;
+
+    cursor:default;
+    user-select:none;
 }
 
 
@@ -288,13 +291,36 @@ body{
    IMAGE
 ========================= */
 
-.fenetre-photo img {
-    display: block;
-    width: auto;
-    height: auto;
-    max-width: 100%;
-    max-height: calc(76vh - 30px);
-    object-fit: contain;
+.fenetre-photo img{
+    display:block;
+
+    width:100%;
+    height:100%;
+
+    max-width:none;
+    max-height:none;
+
+    object-fit:contain;
+
+    transform-origin:center center;
+
+    user-select:none;
+    -webkit-user-drag:none;
+
+    transition:none;
+}
+
+
+/* =========================
+   IMAGE ZOOMÉE
+========================= */
+
+.conteneur-image.image-zoomee{
+    cursor:grab;
+}
+
+.conteneur-image.image-zoomee:active{
+    cursor:grabbing;
 }
 
 
@@ -303,14 +329,14 @@ body{
 ========================= */
 
 #fenetre-1{
-    top: 6vh;
-    left: 12vw;
+    top:6vh;
+    left:12vw;
     z-index:1;
 }
 
 #fenetre-2{
-    top: 16vh;
-    right: 12vw;
+    top:16vh;
+    right:12vw;
     z-index:2;
 }
 
@@ -392,13 +418,47 @@ body{
 
         <div class="menu-horizontal">
 
-            <img class="miniature" src="dessin-01.jpg" onclick="ouvrirPopup(0)">
-            <img class="miniature" src="dessin-02.jpg" onclick="ouvrirPopup(1)">
-            <img class="miniature" src="dessin-03.jpg" onclick="ouvrirPopup(2)">
-            <img class="miniature" src="dessin-04.jpg" onclick="ouvrirPopup(3)">
-            <img class="miniature" src="dessin-05.jpg" onclick="ouvrirPopup(4)">
-            <img class="miniature" src="dessin-06.jpg" onclick="ouvrirPopup(5)">
-            <img class="miniature" src="dessin-07.jpg" onclick="ouvrirPopup(6)">
+            <img
+                class="miniature"
+                src="dessin-01.jpg"
+                onclick="ouvrirPopup(0)"
+            >
+
+            <img
+                class="miniature"
+                src="dessin-02.jpg"
+                onclick="ouvrirPopup(1)"
+            >
+
+            <img
+                class="miniature"
+                src="dessin-03.jpg"
+                onclick="ouvrirPopup(2)"
+            >
+
+            <img
+                class="miniature"
+                src="dessin-04.jpg"
+                onclick="ouvrirPopup(3)"
+            >
+
+            <img
+                class="miniature"
+                src="dessin-05.jpg"
+                onclick="ouvrirPopup(4)"
+            >
+
+            <img
+                class="miniature"
+                src="dessin-06.jpg"
+                onclick="ouvrirPopup(5)"
+            >
+
+            <img
+                class="miniature"
+                src="dessin-07.jpg"
+                onclick="ouvrirPopup(6)"
+            >
 
         </div>
 
@@ -411,13 +471,26 @@ body{
      POP-UP DES DESSINS
 ========================= -->
 
-<div id="popup" onclick="fermerPopup()">
+<div
+    id="popup"
+    onclick="fermerPopup()"
+>
 
-    <div id="popup-contenu" onclick="event.stopPropagation()">
+    <div
+        id="popup-contenu"
+        onclick="event.stopPropagation()"
+    >
 
-        <div id="fermer" onclick="fermerPopup()">×</div>
+        <div
+            id="fermer"
+            onclick="fermerPopup()"
+        >×</div>
 
-        <img id="image-popup" src="" alt="">
+        <img
+            id="image-popup"
+            src=""
+            alt=""
+        >
 
     </div>
 
@@ -431,9 +504,14 @@ body{
 <div id="photos-popup">
 
 
-    <!-- FENÊTRE 1 -->
+    <!-- =====================
+         FENÊTRE 1
+    ====================== -->
 
-    <div id="fenetre-1" class="fenetre-photo">
+    <div
+        id="fenetre-1"
+        class="fenetre-photo"
+    >
 
         <div
             class="barre-fenetre"
@@ -449,7 +527,10 @@ body{
                     onclick="zoomPhoto(event, 1, 1.15)"
                 >+</button>
 
-                <div id="pourcentage-1" class="pourcentage">100%</div>
+                <div
+                    id="pourcentage-1"
+                    class="pourcentage"
+                >100%</div>
 
                 <button
                     class="bouton"
@@ -471,7 +552,11 @@ body{
         </div>
 
 
-        <div class="conteneur-image">
+        <div
+            id="conteneur-image-1"
+            class="conteneur-image"
+            onmousedown="commencerDeplacementImage(event, 1)"
+        >
 
             <img
                 id="image-successives-1"
@@ -505,9 +590,14 @@ body{
     </div>
 
 
-    <!-- FENÊTRE 2 -->
+    <!-- =====================
+         FENÊTRE 2
+    ====================== -->
 
-    <div id="fenetre-2" class="fenetre-photo">
+    <div
+        id="fenetre-2"
+        class="fenetre-photo"
+    >
 
         <div
             class="barre-fenetre"
@@ -523,7 +613,10 @@ body{
                     onclick="zoomPhoto(event, 2, 1.15)"
                 >+</button>
 
-                <div id="pourcentage-2" class="pourcentage">100%</div>
+                <div
+                    id="pourcentage-2"
+                    class="pourcentage"
+                >100%</div>
 
                 <button
                     class="bouton"
@@ -545,7 +638,11 @@ body{
         </div>
 
 
-        <div class="conteneur-image">
+        <div
+            id="conteneur-image-2"
+            class="conteneur-image"
+            onmousedown="commencerDeplacementImage(event, 2)"
+        >
 
             <img
                 id="image-successives-2"
@@ -680,16 +777,35 @@ function ouvrirPhotos(){
     const fenetre2 =
         document.getElementById("fenetre-2");
 
+
     photosPopup.style.display = "block";
 
     fenetre1.style.display = "block";
     fenetre2.style.display = "block";
 
+
     fenetre1.style.zIndex = "1";
     fenetre2.style.zIndex = "2";
 
+
     zooms[1] = 1;
     zooms[2] = 1;
+
+
+    positionsImage[1] = {
+        x:0,
+        y:0
+    };
+
+    positionsImage[2] = {
+        x:0,
+        y:0
+    };
+
+
+    appliquerZoom(1);
+    appliquerZoom(2);
+
 
     initialiserFenetre(1);
     initialiserFenetre(2);
@@ -703,26 +819,35 @@ function ouvrirPhotos(){
 function initialiserFenetre(numero){
 
     const fenetre =
-        document.getElementById("fenetre-" + numero);
+        document.getElementById(
+            "fenetre-" + numero
+        );
+
 
     const image =
-        document.getElementById("image-successives-" + numero);
+        document.getElementById(
+            "image-successives-" + numero
+        );
 
 
     function calculer(){
 
         const ratio =
-            image.naturalWidth / image.naturalHeight;
+            image.naturalWidth /
+            image.naturalHeight;
 
-        if(!ratio || !isFinite(ratio)){
+
+        if(
+            !ratio ||
+            !isFinite(ratio)
+        ){
             return;
         }
 
 
         /*
-           Taille maximale souhaitée pour l'image.
-           On augmente volontairement les dimensions
-           par rapport à la version précédente.
+           Taille maximale souhaitée
+           pour la photographie.
         */
 
         const largeurMax =
@@ -739,15 +864,20 @@ function initialiserFenetre(numero){
             largeur / ratio;
 
 
-        if(hauteur > hauteurMax){
+        if(
+            hauteur > hauteurMax
+        ){
 
-            hauteur = hauteurMax;
-            largeur = hauteur * ratio;
+            hauteur =
+                hauteurMax;
+
+            largeur =
+                hauteur * ratio;
         }
 
 
         /*
-           On réserve l'espace pour :
+           Espace réservé pour :
            - la bordure
            - la barre supérieure
            - les marges autour de l'image
@@ -769,31 +899,43 @@ function initialiserFenetre(numero){
 
         /*
            Positionnement initial.
-           La deuxième fenêtre vient légèrement
-           recouvrir la première.
         */
 
         if(numero === 1){
 
             fenetre.style.left =
-                Math.round(window.innerWidth * 0.08) + "px";
+                Math.round(
+                    window.innerWidth * 0.08
+                ) + "px";
 
             fenetre.style.top =
-                Math.round(window.innerHeight * 0.08) + "px";
+                Math.round(
+                    window.innerHeight * 0.08
+                ) + "px";
         }
 
         else{
 
             fenetre.style.left =
-                Math.round(window.innerWidth * 0.38) + "px";
+                Math.round(
+                    window.innerWidth * 0.38
+                ) + "px";
 
             fenetre.style.top =
-                Math.round(window.innerHeight * 0.20) + "px";
+                Math.round(
+                    window.innerHeight * 0.20
+                ) + "px";
+
+            fenetre.style.right =
+                "auto";
         }
     }
 
 
-    if(image.complete && image.naturalWidth){
+    if(
+        image.complete &&
+        image.naturalWidth
+    ){
 
         calculer();
 
@@ -820,13 +962,21 @@ function fermerPhoto(numero){
 
 
     const photo1 =
-        document.getElementById("fenetre-1").style.display;
+        document.getElementById(
+            "fenetre-1"
+        ).style.display;
+
 
     const photo2 =
-        document.getElementById("fenetre-2").style.display;
+        document.getElementById(
+            "fenetre-2"
+        ).style.display;
 
 
-    if(photo1 === "none" && photo2 === "none"){
+    if(
+        photo1 === "none" &&
+        photo2 === "none"
+    ){
 
         document.getElementById(
             "photos-popup"
@@ -845,28 +995,85 @@ let zooms = {
 };
 
 
-function zoomPhoto(event, numero, facteur){
+/*
+   Position de l'image
+   à l'intérieur de sa fenêtre.
+*/
+
+let positionsImage = {
+
+    1:{
+        x:0,
+        y:0
+    },
+
+    2:{
+        x:0,
+        y:0
+    }
+};
+
+
+/* =========================
+   ZOOMER
+========================= */
+
+function zoomPhoto(
+    event,
+    numero,
+    facteur
+){
 
     event.stopPropagation();
+
 
     let nouveauZoom =
         zooms[numero] * facteur;
 
 
-    if(nouveauZoom < 0.5){
+    if(
+        nouveauZoom < 0.5
+    ){
+
         nouveauZoom = 0.5;
     }
 
-    if(nouveauZoom > 4){
+
+    if(
+        nouveauZoom > 4
+    ){
+
         nouveauZoom = 4;
     }
 
 
-    zooms[numero] = nouveauZoom;
+    zooms[numero] =
+        nouveauZoom;
+
+
+    /*
+       Si on revient à 100 %,
+       on recentre automatiquement.
+    */
+
+    if(
+        zooms[numero] === 1
+    ){
+
+        positionsImage[numero] = {
+            x:0,
+            y:0
+        };
+    }
+
 
     appliquerZoom(numero);
 }
 
+
+/* =========================
+   APPLIQUER LE ZOOM
+========================= */
 
 function appliquerZoom(numero){
 
@@ -876,29 +1083,260 @@ function appliquerZoom(numero){
         );
 
 
-    image.style.transform =
-        "scale(" + zooms[numero] + ")";
+    const conteneur =
+        document.getElementById(
+            "conteneur-image-" + numero
+        );
 
+
+    const position =
+        positionsImage[numero];
+
+
+    /*
+       L'image est d'abord agrandie,
+       puis déplacée selon sa position.
+    */
+
+    image.style.transform =
+        "translate(" +
+        position.x +
+        "px, " +
+        position.y +
+        "px) scale(" +
+        zooms[numero] +
+        ")";
+
+
+    /*
+       Curseur uniquement lorsque
+       l'image est réellement zoomée.
+    */
+
+    if(
+        zooms[numero] > 1
+    ){
+
+        conteneur.classList.add(
+            "image-zoomee"
+        );
+
+    }else{
+
+        conteneur.classList.remove(
+            "image-zoomee"
+        );
+    }
+
+
+    /*
+       Affichage du pourcentage.
+    */
 
     document.getElementById(
         "pourcentage-" + numero
     ).textContent =
-        Math.round(zooms[numero] * 100) + "%";
+        Math.round(
+            zooms[numero] * 100
+        ) + "%";
 }
 
 
-function resetZoom(event, numero){
+/* =========================
+   RESET ZOOM
+========================= */
+
+function resetZoom(
+    event,
+    numero
+){
 
     event.stopPropagation();
 
+
     zooms[numero] = 1;
+
+
+    positionsImage[numero] = {
+        x:0,
+        y:0
+    };
+
 
     appliquerZoom(numero);
 }
 
 
 /* =========================
-   DÉPLACEMENT
+   DÉPLACEMENT DE L'IMAGE
+========================= */
+
+let imageEnDeplacement = null;
+
+let numeroImageDeplacee = null;
+
+let departImageX = 0;
+let departImageY = 0;
+
+let positionDepartImageX = 0;
+let positionDepartImageY = 0;
+
+
+/* =========================
+   COMMENCER DÉPLACEMENT IMAGE
+========================= */
+
+function commencerDeplacementImage(
+    event,
+    numero
+){
+
+    /*
+       On ne peut déplacer l'image
+       que lorsqu'elle est zoomée.
+    */
+
+    if(
+        zooms[numero] <= 1
+    ){
+
+        return;
+    }
+
+
+    /*
+       Ne rien faire si le clic
+       vient d'un bouton.
+    */
+
+    if(
+        event.target.closest("button") ||
+        event.target.closest(".fermer-photo")
+    ){
+
+        return;
+    }
+
+
+    const conteneur =
+        document.getElementById(
+            "conteneur-image-" + numero
+        );
+
+
+    /*
+       On mémorise le déplacement
+       actuel de l'image.
+    */
+
+    imageEnDeplacement =
+        conteneur;
+
+    numeroImageDeplacee =
+        numero;
+
+
+    departImageX =
+        event.clientX;
+
+    departImageY =
+        event.clientY;
+
+
+    positionDepartImageX =
+        positionsImage[numero].x;
+
+    positionDepartImageY =
+        positionsImage[numero].y;
+
+
+    document.addEventListener(
+        "mousemove",
+        deplacerImage
+    );
+
+
+    document.addEventListener(
+        "mouseup",
+        terminerDeplacementImage
+    );
+
+
+    event.preventDefault();
+}
+
+
+/* =========================
+   DÉPLACER IMAGE
+========================= */
+
+function deplacerImage(event){
+
+    if(
+        !imageEnDeplacement ||
+        numeroImageDeplacee === null
+    ){
+
+        return;
+    }
+
+
+    const numero =
+        numeroImageDeplacee;
+
+
+    const deltaX =
+        event.clientX -
+        departImageX;
+
+
+    const deltaY =
+        event.clientY -
+        departImageY;
+
+
+    positionsImage[numero].x =
+        positionDepartImageX +
+        deltaX;
+
+
+    positionsImage[numero].y =
+        positionDepartImageY +
+        deltaY;
+
+
+    appliquerZoom(numero);
+}
+
+
+/* =========================
+   FIN DÉPLACEMENT IMAGE
+========================= */
+
+function terminerDeplacementImage(){
+
+    imageEnDeplacement =
+        null;
+
+    numeroImageDeplacee =
+        null;
+
+
+    document.removeEventListener(
+        "mousemove",
+        deplacerImage
+    );
+
+
+    document.removeEventListener(
+        "mouseup",
+        terminerDeplacementImage
+    );
+}
+
+
+/* =========================
+   DÉPLACEMENT DE LA FENÊTRE
 ========================= */
 
 let fenetreEnDeplacement = null;
@@ -907,21 +1345,33 @@ let decalageX = 0;
 let decalageY = 0;
 
 
-function commencerDeplacement(event, numero){
+function commencerDeplacement(
+    event,
+    numero
+){
+
+    /*
+       Les boutons ne déplacent pas
+       la fenêtre.
+    */
 
     if(
         event.target.closest("button") ||
         event.target.closest(".fermer-photo")
     ){
+
         return;
     }
 
 
     const fenetre =
-        document.getElementById("fenetre-" + numero);
+        document.getElementById(
+            "fenetre-" + numero
+        );
 
 
-    fenetreEnDeplacement = fenetre;
+    fenetreEnDeplacement =
+        fenetre;
 
 
     const rectangle =
@@ -929,33 +1379,41 @@ function commencerDeplacement(event, numero){
 
 
     decalageX =
-        event.clientX - rectangle.left;
+        event.clientX -
+        rectangle.left;
+
 
     decalageY =
-        event.clientY - rectangle.top;
+        event.clientY -
+        rectangle.top;
 
 
     fenetre.style.left =
         rectangle.left + "px";
 
+
     fenetre.style.top =
         rectangle.top + "px";
+
 
     fenetre.style.right =
         "auto";
 
 
     /*
-       La fenêtre attrapée passe devant.
+       La fenêtre attrapée
+       passe devant.
     */
 
-    fenetre.style.zIndex = "10";
+    fenetre.style.zIndex =
+        "10";
 
 
     document.addEventListener(
         "mousemove",
         deplacerFenetre
     );
+
 
     document.addEventListener(
         "mouseup",
@@ -969,28 +1427,40 @@ function commencerDeplacement(event, numero){
 
 function deplacerFenetre(event){
 
-    if(!fenetreEnDeplacement){
+    if(
+        !fenetreEnDeplacement
+    ){
+
         return;
     }
 
 
     fenetreEnDeplacement.style.left =
-        (event.clientX - decalageX) + "px";
+        (
+            event.clientX -
+            decalageX
+        ) + "px";
+
 
     fenetreEnDeplacement.style.top =
-        (event.clientY - decalageY) + "px";
+        (
+            event.clientY -
+            decalageY
+        ) + "px";
 }
 
 
 function terminerDeplacement(){
 
-    fenetreEnDeplacement = null;
+    fenetreEnDeplacement =
+        null;
 
 
     document.removeEventListener(
         "mousemove",
         deplacerFenetre
     );
+
 
     document.removeEventListener(
         "mouseup",
@@ -1004,6 +1474,7 @@ function terminerDeplacement(){
 ========================= */
 
 let fenetreRedimensionnement = null;
+
 let coinRedimensionnement = null;
 
 let departX = 0;
@@ -1033,7 +1504,10 @@ function commencerRedimensionnement(
 
 
     const fenetre =
-        document.getElementById("fenetre-" + numero);
+        document.getElementById(
+            "fenetre-" + numero
+        );
+
 
     const image =
         document.getElementById(
@@ -1041,16 +1515,23 @@ function commencerRedimensionnement(
         );
 
 
-    fenetreRedimensionnement = fenetre;
-    coinRedimensionnement = coin;
+    fenetreRedimensionnement =
+        fenetre;
+
+
+    coinRedimensionnement =
+        coin;
 
 
     const rectangle =
         fenetre.getBoundingClientRect();
 
 
-    departX = event.clientX;
-    departY = event.clientY;
+    departX =
+        event.clientX;
+
+    departY =
+        event.clientY;
 
 
     largeurDepart =
@@ -1069,10 +1550,6 @@ function commencerRedimensionnement(
 
     /*
        Ratio réel de la photographie.
-
-       On ajoute les dimensions fixes de la fenêtre
-       (barre + marges) pour conserver exactement
-       le ratio visuel de la photo.
     */
 
     if(
@@ -1080,21 +1557,30 @@ function commencerRedimensionnement(
         image.naturalHeight
     ){
 
-        const ratioImage =
-            image.naturalWidth / image.naturalHeight;
+        const espaceHorizontal =
+            42;
 
-        const espaceHorizontal = 42;
-        const espaceVertical = 72;
+        const espaceVertical =
+            72;
+
 
         ratioFenetre =
-            (image.naturalWidth + espaceHorizontal) /
-            (image.naturalHeight + espaceVertical);
+            (
+                image.naturalWidth +
+                espaceHorizontal
+            ) /
+            (
+                image.naturalHeight +
+                espaceVertical
+            );
+
     }
 
     else{
 
         ratioFenetre =
-            largeurDepart / hauteurDepart;
+            largeurDepart /
+            hauteurDepart;
     }
 
 
@@ -1102,6 +1588,7 @@ function commencerRedimensionnement(
         "mousemove",
         redimensionnerFenetre
     );
+
 
     document.addEventListener(
         "mouseup",
@@ -1116,34 +1603,43 @@ function commencerRedimensionnement(
 
 function redimensionnerFenetre(event){
 
-    if(!fenetreRedimensionnement){
+    if(
+        !fenetreRedimensionnement
+    ){
+
         return;
     }
 
 
     const deltaX =
-        event.clientX - departX;
+        event.clientX -
+        departX;
+
 
     const deltaY =
-        event.clientY - departY;
+        event.clientY -
+        departY;
 
 
     let nouvelleLargeur =
         largeurDepart;
 
+
     let nouvelleHauteur =
         hauteurDepart;
 
+
     let nouvelleGauche =
         gaucheDepart;
+
 
     let nouveauHaut =
         hautDepart;
 
 
     /*
-       On choisit la variation correspondant
-       au mouvement principal de la souris.
+       On utilise le mouvement
+       principal de la souris.
     */
 
     let variation;
@@ -1154,11 +1650,13 @@ function redimensionnerFenetre(event){
         Math.abs(deltaY)
     ){
 
-        variation = deltaX;
+        variation =
+            deltaX;
 
     }else{
 
-        variation = deltaY;
+        variation =
+            deltaY;
     }
 
 
@@ -1171,10 +1669,13 @@ function redimensionnerFenetre(event){
     ){
 
         nouvelleLargeur =
-            largeurDepart + variation;
+            largeurDepart +
+            variation;
+
 
         nouvelleHauteur =
-            nouvelleLargeur / ratioFenetre;
+            nouvelleLargeur /
+            ratioFenetre;
     }
 
 
@@ -1187,14 +1688,21 @@ function redimensionnerFenetre(event){
     ){
 
         nouvelleLargeur =
-            largeurDepart - variation;
+            largeurDepart -
+            variation;
+
 
         nouvelleHauteur =
-            nouvelleLargeur / ratioFenetre;
+            nouvelleLargeur /
+            ratioFenetre;
+
 
         nouvelleGauche =
             gaucheDepart +
-            (largeurDepart - nouvelleLargeur);
+            (
+                largeurDepart -
+                nouvelleLargeur
+            );
     }
 
 
@@ -1207,14 +1715,21 @@ function redimensionnerFenetre(event){
     ){
 
         nouvelleLargeur =
-            largeurDepart + variation;
+            largeurDepart +
+            variation;
+
 
         nouvelleHauteur =
-            nouvelleLargeur / ratioFenetre;
+            nouvelleLargeur /
+            ratioFenetre;
+
 
         nouveauHaut =
             hautDepart +
-            (hauteurDepart - nouvelleHauteur);
+            (
+                hauteurDepart -
+                nouvelleHauteur
+            );
     }
 
 
@@ -1227,18 +1742,29 @@ function redimensionnerFenetre(event){
     ){
 
         nouvelleLargeur =
-            largeurDepart - variation;
+            largeurDepart -
+            variation;
+
 
         nouvelleHauteur =
-            nouvelleLargeur / ratioFenetre;
+            nouvelleLargeur /
+            ratioFenetre;
+
 
         nouvelleGauche =
             gaucheDepart +
-            (largeurDepart - nouvelleLargeur);
+            (
+                largeurDepart -
+                nouvelleLargeur
+            );
+
 
         nouveauHaut =
             hautDepart +
-            (hauteurDepart - nouvelleHauteur);
+            (
+                hauteurDepart -
+                nouvelleHauteur
+            );
     }
 
 
@@ -1246,31 +1772,40 @@ function redimensionnerFenetre(event){
        Taille minimale.
     */
 
-    const largeurMinimum = 240;
-    const hauteurMinimum = 180;
+    const largeurMinimum =
+        240;
+
+    const hauteurMinimum =
+        180;
 
 
     if(
-        nouvelleLargeur < largeurMinimum
+        nouvelleLargeur <
+        largeurMinimum
     ){
 
         nouvelleLargeur =
             largeurMinimum;
 
+
         nouvelleHauteur =
-            nouvelleLargeur / ratioFenetre;
+            nouvelleLargeur /
+            ratioFenetre;
     }
 
 
     if(
-        nouvelleHauteur < hauteurMinimum
+        nouvelleHauteur <
+        hauteurMinimum
     ){
 
         nouvelleHauteur =
             hauteurMinimum;
 
+
         nouvelleLargeur =
-            nouvelleHauteur * ratioFenetre;
+            nouvelleHauteur *
+            ratioFenetre;
     }
 
 
@@ -1281,14 +1816,18 @@ function redimensionnerFenetre(event){
     fenetreRedimensionnement.style.width =
         nouvelleLargeur + "px";
 
+
     fenetreRedimensionnement.style.height =
         nouvelleHauteur + "px";
+
 
     fenetreRedimensionnement.style.left =
         nouvelleGauche + "px";
 
+
     fenetreRedimensionnement.style.top =
         nouveauHaut + "px";
+
 
     fenetreRedimensionnement.style.right =
         "auto";
@@ -1301,15 +1840,19 @@ function redimensionnerFenetre(event){
 
 function terminerRedimensionnement(){
 
-    fenetreRedimensionnement = null;
+    fenetreRedimensionnement =
+        null;
 
-    coinRedimensionnement = null;
+
+    coinRedimensionnement =
+        null;
 
 
     document.removeEventListener(
         "mousemove",
         redimensionnerFenetre
     );
+
 
     document.removeEventListener(
         "mouseup",

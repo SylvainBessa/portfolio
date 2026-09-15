@@ -1986,20 +1986,20 @@ document.addEventListener(
 
 </script>
 
-    <!-- =========================================================
-     NORMOGRAPHE 1
+<!-- =========================================================
+     NORMOGRAPHE 1 — DOCUMENTATION INTERACTIVE
 ========================================================= -->
 
 <style>
 
 /* =========================================================
-   CONTENEUR GÉNÉRAL
+   SECTION
 ========================================================= */
 
 #normographe-section{
     width:100%;
-    margin-top:180px;
-    padding-bottom:180px;
+    margin-top:35px;
+    padding-bottom:120px;
     box-sizing:border-box;
     text-align:center;
 }
@@ -2010,141 +2010,180 @@ document.addEventListener(
 ========================================================= */
 
 #normographe-titre{
+    margin:0 0 25px 0;
+    padding:0;
+    font-family:"Times New Roman", serif;
     font-size:22px;
     font-weight:normal;
-    margin:0 0 45px 0;
 }
 
 
 /* =========================================================
-   ZONE INTERACTIVE
+   IMAGE DES DEUX NORMOGRAPHES
 ========================================================= */
 
-#normographe-vue{
+#normographe-vue-initiale{
+
     position:relative;
+
     width:min(92vw, 1500px);
+
     margin:0 auto;
-    display:block;
+
+    cursor:default;
 }
 
 
-/*
-   L'image complète des deux normographes.
-
-   Le ratio est conservé automatiquement.
-*/
-
 #normographe-fond{
+
     display:block;
+
     width:100%;
     height:auto;
+
     user-select:none;
+
     -webkit-user-drag:none;
 }
 
 
 /* =========================================================
-   ZONE DES 32 DESSINS
+   ZONE CLIQUABLE NORMOGRAPHE GAUCHE
 ========================================================= */
 
+#normographe-gauche{
 
-/*
-   Cette zone correspond au normographe de gauche.
-
-   Les coordonnées sont exprimées en pourcentage
-   afin que tout reste correctement positionné
-   lorsque la fenêtre change de taille.
-*/
-
-#zone-dessins{
     position:absolute;
 
-    /*
-       x ≈ 98 / 2048
-       largeur ≈ 818 / 2048
-    */
-
     left:4.8%;
-    width:40%;
-
-    /*
-       y ≈ 162 / 989
-    */
-
     top:16.4%;
 
-    /*
-       hauteur ≈ 635 / 989
-    */
-
+    width:40%;
     height:64.2%;
 
-    overflow:hidden;
+    cursor:pointer;
 
-    /*
-       Légère forme arrondie correspondant
-       au normographe.
-    */
-
-    border-radius:6%;
-
-    pointer-events:none;
+    z-index:10;
 }
 
 
 /* =========================================================
-   UNITÉ / DESSIN
+   ZONE CLIQUABLE NORMOGRAPHE DROIT
+========================================================= */
+
+#normographe-droit{
+
+    position:absolute;
+
+    left:56.1%;
+    top:16.3%;
+
+    width:40.9%;
+    height:64.4%;
+
+    cursor:pointer;
+
+    z-index:10;
+}
+
+
+/*
+   Très légère indication au survol.
+   Rien n'apparaît au repos.
+*/
+
+#normographe-gauche:hover,
+#normographe-droit:hover{
+
+    background:rgba(255,255,255,0.04);
+}
+
+
+/* =========================================================
+   VUE DES 32 DESSINS
+========================================================= */
+
+#vue-dessins{
+
+    display:none;
+
+    position:fixed;
+
+    left:0;
+    top:0;
+
+    width:100vw;
+    height:100vh;
+
+    background:white;
+
+    z-index:4000;
+
+    overflow:hidden;
+}
+
+
+/*
+   Les 32 dessins sont positionnés
+   directement dans toute la fenêtre.
+*/
+
+#dessins-espace{
+
+    position:absolute;
+
+    left:0;
+    top:0;
+
+    width:100%;
+    height:100%;
+}
+
+
+/* =========================================================
+   DESSINS
 ========================================================= */
 
 .normo-dessin{
 
     position:absolute;
 
-    width:125px;
+    display:block;
+
+    width:150px;
     height:auto;
 
     cursor:pointer;
 
-    user-select:none;
-    -webkit-user-drag:none;
-
-    pointer-events:auto;
+    background:white;
 
     border:1px solid transparent;
+
+    user-select:none;
+
+    -webkit-user-drag:none;
 
     box-sizing:border-box;
 
     transition:
         transform 0.18s ease,
         opacity 0.18s ease;
-
-    /*
-       Ombre très légère pour séparer
-       les scans du normographe.
-    */
-
-    background:white;
 }
 
 
-/*
-   Au survol, le dessin vient légèrement
-   vers le visiteur.
-*/
-
 .normo-dessin:hover{
 
-    opacity:0.78;
-
-    z-index:1000 !important;
+    opacity:0.75;
 
     transform:
         translate(
-            var(--deplacement-x),
-            var(--deplacement-y)
+            var(--dx),
+            var(--dy)
         )
         rotate(var(--rotation))
         scale(1.08);
+
+    z-index:3000 !important;
 }
 
 
@@ -2154,11 +2193,19 @@ document.addEventListener(
 
 #melanger-normographe{
 
-    display:block;
+    display:none;
 
-    margin:35px auto 0 auto;
+    position:fixed;
 
-    padding:3px 8px;
+    left:50%;
+
+    bottom:25px;
+
+    transform:translateX(-50%);
+
+    z-index:4500;
+
+    padding:4px 9px;
 
     background:white;
 
@@ -2179,244 +2226,33 @@ document.addEventListener(
 
 
 /* =========================================================
-   BOUTON QUITTER
+   INDICATION POUR QUITTER
 ========================================================= */
 
-#quitter-normographe{
+#indication-quitter-dessins{
 
-    position:absolute;
+    position:fixed;
 
-    top:10px;
-    right:15px;
+    left:20px;
+    bottom:20px;
 
-    z-index:2000;
-
-    background:white;
-
-    border:none;
-
-    font-family:"Times New Roman", serif;
-
-    font-size:18px;
-
-    cursor:pointer;
-
-    padding:2px 5px;
-}
-
-
-#quitter-normographe:hover{
-
-    opacity:0.5;
-}
-
-
-/* =========================================================
-   LIEN POUR RÉOUVRIR LA VUE
-========================================================= */
-
-#rouvrir-normographe{
-
-    display:none;
-
-    margin:80px auto;
-
-    color:blue;
-
-    text-decoration:underline;
-
-    font-family:"Times New Roman", serif;
-
-    font-size:18px;
-
-    cursor:pointer;
-
-    width:max-content;
-}
-
-
-/* =========================================================
-   ZONE DU NORMOGRAPHE DROIT
-   → PHOTOS D'INSTALLATION
-========================================================= */
-
-#zone-installation{
-
-    position:absolute;
-
-    /*
-       x ≈ 1149 / 2048
-    */
-
-    left:56.1%;
-
-    width:40.9%;
-
-    /*
-       y ≈ 161 / 989
-    */
-
-    top:16.3%;
-
-    height:64.4%;
-
-    cursor:pointer;
-
-    /*
-       On laisse cliquer sur toute la
-       surface du normographe droit.
-    */
-
-    z-index:50;
-}
-
-
-/*
-   Petite indication au survol.
-
-   Elle reste volontairement discrète.
-*/
-
-#zone-installation::after{
-
-    content:"photographies";
-
-    position:absolute;
-
-    left:50%;
-    bottom:8px;
-
-    transform:translateX(-50%);
+    z-index:4500;
 
     font-family:"Times New Roman", serif;
 
     font-size:15px;
 
-    opacity:0;
-
-    transition:opacity 0.2s ease;
-
-    background:white;
-
-    padding:2px 5px;
-
-    border:1px solid black;
-}
-
-
-#zone-installation:hover::after{
-
-    opacity:1;
-}
-
-
-/* =========================================================
-   MENU DES PHOTOS
-========================================================= */
-
-#installation-menu{
-
-    display:none;
-
-    position:absolute;
-
-    left:56.1%;
-
-    top:16.3%;
-
-    width:40.9%;
-
-    height:64.4%;
-
-    z-index:100;
-
     pointer-events:none;
-}
 
-
-/*
-   Les quatre petites photographies.
-*/
-
-.photo-installation{
-
-    position:absolute;
-
-    width:145px;
-
-    height:auto;
-
-    max-width:25%;
-
-    border:1px solid black;
-
-    background:white;
-
-    cursor:pointer;
-
-    pointer-events:auto;
-
-    transition:
-        transform 0.2s ease,
-        opacity 0.2s ease;
-}
-
-
-.photo-installation:hover{
-
-    opacity:0.75;
-
-    transform:
-        rotate(0deg)
-        scale(1.06);
-
-    z-index:500;
-}
-
-
-/* Positions des quatre photographies */
-
-#photo-install-1{
-
-    left:2%;
-    top:4%;
-
-    transform:rotate(-3deg);
-}
-
-
-#photo-install-2{
-
-    right:2%;
-    top:12%;
-
-    transform:rotate(4deg);
-}
-
-
-#photo-install-3{
-
-    left:8%;
-    bottom:4%;
-
-    transform:rotate(2deg);
-}
-
-
-#photo-install-4{
-
-    right:8%;
-    bottom:2%;
-
-    transform:rotate(-4deg);
+    opacity:0.65;
 }
 
 
 /* =========================================================
-   POPUP DES DESSINS
+   POPUP D'UN DESSIN
 ========================================================= */
 
-#normo-popup{
+#normo-dessin-popup{
 
     display:none;
 
@@ -2428,82 +2264,69 @@ document.addEventListener(
     width:100vw;
     height:100vh;
 
-    background:rgba(255,255,255,0.88);
+    background:rgba(255,255,255,0.92);
 
-    z-index:5000;
+    z-index:6000;
 
     align-items:center;
     justify-content:center;
 }
 
 
-#normo-popup-contenu{
+/* image agrandie */
 
-    position:relative;
-
-    max-width:92vw;
-    max-height:92vh;
-
-    background:white;
-
-    border:1px solid black;
-
-    padding:25px;
-
-    box-sizing:border-box;
-}
-
-
-#normo-popup-image{
+#normo-dessin-popup img{
 
     display:block;
 
-    max-width:86vw;
-    max-height:82vh;
+    max-width:90vw;
+    max-height:88vh;
 
     width:auto;
     height:auto;
 
     object-fit:contain;
+
+    border:1px solid black;
 }
 
 
-/* =========================================================
-   NUMÉRO DU DESSIN
-========================================================= */
+/* numéro */
 
-#normo-popup-numero{
+#normo-dessin-numero{
 
-    position:absolute;
+    position:fixed;
 
-    left:10px;
-    top:5px;
+    left:15px;
+    top:12px;
 
-    font-size:15px;
+    font-family:"Times New Roman", serif;
+
+    font-size:16px;
+
+    z-index:6200;
 }
 
 
-/* =========================================================
-   FERMER
-========================================================= */
+/* fermer */
 
-#normo-popup-fermer{
+#normo-dessin-fermer{
 
-    position:absolute;
+    position:fixed;
 
-    top:3px;
-    right:8px;
+    right:18px;
+    top:8px;
 
-    font-size:22px;
+    font-size:25px;
 
     cursor:pointer;
 
-    z-index:10;
+    z-index:6200;
 }
 
 
 /* =========================================================
-   FLÈCHES
+   FLÈCHES DESSINS
 ========================================================= */
 
 .normo-fleche{
@@ -2514,6 +2337,9 @@ document.addEventListener(
 
     transform:translateY(-50%);
 
+    width:38px;
+    height:38px;
+
     background:white;
 
     border:1px solid black;
@@ -2522,14 +2348,9 @@ document.addEventListener(
 
     font-size:22px;
 
-    width:38px;
-    height:38px;
-
-    line-height:32px;
-
     cursor:pointer;
 
-    z-index:5100;
+    z-index:6200;
 }
 
 
@@ -2539,23 +2360,124 @@ document.addEventListener(
 }
 
 
-#normo-fleche-gauche{
+#normo-dessin-gauche{
 
-    left:20px;
+    left:18px;
 }
 
 
-#normo-fleche-droite{
+#normo-dessin-droite{
 
-    right:20px;
+    right:18px;
 }
 
 
 /* =========================================================
-   POPUP DES PHOTOS D'INSTALLATION
+   MENU PHOTOS D'INSTALLATION
 ========================================================= */
 
-#installation-popup{
+#installation-menu{
+
+    display:none;
+
+    position:fixed;
+
+    left:50%;
+    top:50%;
+
+    transform:translate(-50%,-50%);
+
+    width:min(620px, 80vw);
+
+    height:min(78vh, 760px);
+
+    background:white;
+
+    border:1px solid black;
+
+    box-sizing:border-box;
+
+    z-index:5000;
+
+    overflow-y:auto;
+
+    overflow-x:hidden;
+
+    padding:35px 30px 50px 30px;
+}
+
+
+/*
+   petite croix
+*/
+
+#installation-menu-fermer{
+
+    position:sticky;
+
+    top:-25px;
+
+    margin-left:auto;
+
+    width:25px;
+
+    height:25px;
+
+    font-size:22px;
+
+    line-height:25px;
+
+    cursor:pointer;
+
+    text-align:center;
+
+    z-index:20;
+
+    background:white;
+}
+
+
+/* =========================================================
+   PHOTOS DANS LE MENU
+========================================================= */
+
+.photo-installation{
+
+    display:block;
+
+    width:100%;
+
+    height:auto;
+
+    margin:0 auto 45px auto;
+
+    border:1px solid black;
+
+    box-sizing:border-box;
+
+    cursor:pointer;
+
+    transition:opacity 0.2s ease;
+}
+
+
+.photo-installation:hover{
+
+    opacity:0.75;
+}
+
+
+.photo-installation:last-child{
+
+    margin-bottom:0;
+}
+
+
+/* =========================================================
+   POPUP PHOTO
+========================================================= */
+
+#installation-photo-popup{
 
     display:none;
 
@@ -2567,21 +2489,26 @@ document.addEventListener(
     width:100vw;
     height:100vh;
 
-    background:rgba(255,255,255,0.9);
+    background:rgba(255,255,255,0.93);
 
-    z-index:6000;
+    z-index:7000;
 
     align-items:center;
     justify-content:center;
 }
 
 
-#installation-popup-image{
+/*
+   Image de la photo agrandie
+*/
+
+#installation-photo-image{
 
     display:block;
 
-    max-width:92vw;
-    max-height:90vh;
+    max-width:91vw;
+
+    max-height:89vh;
 
     width:auto;
     height:auto;
@@ -2592,30 +2519,94 @@ document.addEventListener(
 }
 
 
-#installation-popup-fermer{
+/* numéro */
+
+#installation-photo-numero{
 
     position:fixed;
 
-    top:15px;
-    right:20px;
+    left:15px;
+    top:12px;
+
+    font-size:16px;
+
+    z-index:7200;
+}
+
+
+/* fermer */
+
+#installation-photo-fermer{
+
+    position:fixed;
+
+    right:18px;
+    top:8px;
 
     font-size:25px;
 
     cursor:pointer;
 
-    z-index:6100;
+    z-index:7200;
 }
 
 
 /* =========================================================
-   RESPONSIVE
+   FLÈCHES PHOTOS
+========================================================= */
+
+.installation-fleche{
+
+    position:fixed;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    width:38px;
+    height:38px;
+
+    background:white;
+
+    border:1px solid black;
+
+    font-family:"Times New Roman", serif;
+
+    font-size:22px;
+
+    cursor:pointer;
+
+    z-index:7200;
+}
+
+
+.installation-fleche:hover{
+
+    background:#eeeeee;
+}
+
+
+#installation-photo-gauche{
+
+    left:18px;
+}
+
+
+#installation-photo-droite{
+
+    right:18px;
+}
+
+
+/* =========================================================
+   MOBILE
 ========================================================= */
 
 @media(max-width:800px){
 
     #normographe-section{
 
-        margin-top:120px;
+        margin-top:25px;
 
     }
 
@@ -2624,38 +2615,36 @@ document.addEventListener(
 
         font-size:20px;
 
+        margin-bottom:20px;
+
     }
 
 
     .normo-dessin{
 
-        width:75px;
+        width:105px;
 
     }
 
 
-    #melanger-normographe{
+    #installation-menu{
 
-        font-size:15px;
+        width:90vw;
 
-    }
+        height:82vh;
 
-
-    #zone-installation::after{
-
-        display:none;
+        padding:30px 18px 40px 18px;
 
     }
 
 
     .photo-installation{
 
-        width:100px;
+        margin-bottom:30px;
 
     }
 
 }
-
 
 </style>
 
@@ -2675,20 +2664,10 @@ document.addEventListener(
 
 
     <!-- =====================================================
-         VUE INTERACTIVE
+         VUE INITIALE
     ====================================================== -->
 
-    <div id="normographe-vue">
-
-
-        <!-- BOUTON QUITTER -->
-
-        <button
-            id="quitter-normographe"
-            onclick="quitterNormographe()"
-        >
-            × quitter cette vue
-        </button>
+    <div id="normographe-vue-initiale">
 
 
         <!-- IMAGE DES DEUX NORMOGRAPHES -->
@@ -2700,78 +2679,42 @@ document.addEventListener(
         >
 
 
-        <!-- =================================================
-             ZONE GAUCHE : 32 DESSINS
-        ================================================== -->
-
-        <div id="zone-dessins">
-        </div>
-
-
-        <!-- =================================================
-             ZONE DROITE : PHOTOS D'INSTALLATION
-        ================================================== -->
+        <!-- NORMOGRAPHE GAUCHE -->
 
         <div
-            id="zone-installation"
+            id="normographe-gauche"
+            onclick="ouvrirVueDessins()"
+            title="voir les 32 dessins"
+        ></div>
+
+
+        <!-- NORMOGRAPHE DROIT -->
+
+        <div
+            id="normographe-droit"
             onclick="ouvrirMenuInstallation()"
             title="voir les photographies de l'installation"
-        >
-        </div>
-
-
-        <!-- =================================================
-             MENU DES 4 PHOTOS
-        ================================================== -->
-
-        <div id="installation-menu">
-
-
-            <img
-                id="photo-install-1"
-                class="photo-installation"
-                src="n1-install1.jpg"
-                alt="Photographie de l'installation 1"
-                onclick="ouvrirPhotoInstallation(0)"
-            >
-
-
-            <img
-                id="photo-install-2"
-                class="photo-installation"
-                src="n1-install2.jpg"
-                alt="Photographie de l'installation 2"
-                onclick="ouvrirPhotoInstallation(1)"
-            >
-
-
-            <img
-                id="photo-install-3"
-                class="photo-installation"
-                src="n1-install3.jpg"
-                alt="Photographie de l'installation 3"
-                onclick="ouvrirPhotoInstallation(2)"
-            >
-
-
-            <img
-                id="photo-install-4"
-                class="photo-installation"
-                src="n1-install4.jpg"
-                alt="Photographie de l'installation 4"
-                onclick="ouvrirPhotoInstallation(3)"
-            >
-
-
-        </div>
+        ></div>
 
 
     </div>
 
 
-    <!-- =====================================================
-         BOUTON MÉLANGER
-    ====================================================== -->
+</div>
+
+
+<!-- =========================================================
+     VUE PLEIN ÉCRAN DES 32 DESSINS
+========================================================= -->
+
+<div id="vue-dessins">
+
+
+    <div id="dessins-espace">
+    </div>
+
+
+    <!-- BOUTON MÉLANGER -->
 
     <button
         id="melanger-normographe"
@@ -2781,15 +2724,10 @@ document.addEventListener(
     </button>
 
 
-    <!-- =====================================================
-         LIEN POUR RÉOUVRIR
-    ====================================================== -->
+    <!-- INDICATION -->
 
-    <div
-        id="rouvrir-normographe"
-        onclick="rouvrirNormographe()"
-    >
-        Normographe 1
+    <div id="indication-quitter-dessins">
+        cliquer dans un espace vide pour quitter
     </div>
 
 
@@ -2797,17 +2735,30 @@ document.addEventListener(
 
 
 <!-- =========================================================
-     POPUP DESSINS
+     POPUP DESSIN
 ========================================================= -->
 
 <div
-    id="normo-popup"
-    onclick="fermerNormoPopup()"
+    id="normo-dessin-popup"
+    onclick="fermerNormoDessin()"
 >
 
 
+    <div id="normo-dessin-numero">
+        1 / 32
+    </div>
+
+
+    <div
+        id="normo-dessin-fermer"
+        onclick="fermerNormoDessin()"
+    >
+        ×
+    </div>
+
+
     <button
-        id="normo-fleche-gauche"
+        id="normo-dessin-gauche"
         class="normo-fleche"
         onclick="event.stopPropagation(); dessinNormoPrecedent()"
     >
@@ -2815,37 +2766,16 @@ document.addEventListener(
     </button>
 
 
-    <div
-        id="normo-popup-contenu"
+    <img
+        id="normo-dessin-popup-image"
+        src=""
+        alt=""
         onclick="event.stopPropagation()"
     >
 
 
-        <div id="normo-popup-numero">
-            1 / 32
-        </div>
-
-
-        <div
-            id="normo-popup-fermer"
-            onclick="fermerNormoPopup()"
-        >
-            ×
-        </div>
-
-
-        <img
-            id="normo-popup-image"
-            src=""
-            alt=""
-        >
-
-
-    </div>
-
-
     <button
-        id="normo-fleche-droite"
+        id="normo-dessin-droite"
         class="normo-fleche"
         onclick="event.stopPropagation(); dessinNormoSuivant()"
     >
@@ -2857,29 +2787,102 @@ document.addEventListener(
 
 
 <!-- =========================================================
-     POPUP PHOTOS INSTALLATION
+     MENU PHOTOS D'INSTALLATION
 ========================================================= -->
 
-<div
-    id="installation-popup"
-    onclick="fermerPhotoInstallation()"
->
+<div id="installation-menu">
 
 
     <div
-        id="installation-popup-fermer"
-        onclick="fermerPhotoInstallation()"
+        id="installation-menu-fermer"
+        onclick="fermerMenuInstallation()"
     >
         ×
     </div>
 
 
     <img
-        id="installation-popup-image"
+        class="photo-installation"
+        src="n1-install1.jpg"
+        alt="Photographie de l'installation 1"
+        onclick="ouvrirPhotoInstallation(0)"
+    >
+
+
+    <img
+        class="photo-installation"
+        src="n1-install2.jpg"
+        alt="Photographie de l'installation 2"
+        onclick="ouvrirPhotoInstallation(1)"
+    >
+
+
+    <img
+        class="photo-installation"
+        src="n1-install3.jpg"
+        alt="Photographie de l'installation 3"
+        onclick="ouvrirPhotoInstallation(2)"
+    >
+
+
+    <img
+        class="photo-installation"
+        src="n1-install4.jpg"
+        alt="Photographie de l'installation 4"
+        onclick="ouvrirPhotoInstallation(3)"
+    >
+
+
+</div>
+
+
+<!-- =========================================================
+     POPUP PHOTO D'INSTALLATION
+========================================================= -->
+
+<div
+    id="installation-photo-popup"
+    onclick="fermerPhotoInstallation()"
+>
+
+
+    <div id="installation-photo-numero">
+        1 / 4
+    </div>
+
+
+    <div
+        id="installation-photo-fermer"
+        onclick="fermerPhotoInstallation()"
+    >
+        ×
+    </div>
+
+
+    <button
+        id="installation-photo-gauche"
+        class="installation-fleche"
+        onclick="event.stopPropagation(); photoInstallationPrecedente()"
+    >
+        ←
+    </button>
+
+
+    <img
+        id="installation-photo-image"
         src=""
         alt=""
         onclick="event.stopPropagation()"
     >
+
+
+    <button
+        id="installation-photo-droite"
+        class="installation-fleche"
+        onclick="event.stopPropagation(); photoInstallationSuivante()"
+    >
+        →
+    </button>
 
 
 </div>
@@ -2892,7 +2895,7 @@ document.addEventListener(
 <script>
 
 /* =========================================================
-   LISTE DES 32 DESSINS
+   32 DESSINS
 ========================================================= */
 
 const normoDessins = [];
@@ -2900,40 +2903,69 @@ const normoDessins = [];
 
 for(let i = 1; i <= 32; i++){
 
-    let numero = i.toString().padStart(1,"0");
-
     normoDessins.push(
-        "n1-" + numero + ".jpg"
+        "n1-" + i + ".jpg"
     );
 
 }
 
 
-/*
-   Index du dessin actuellement ouvert
-*/
+/* =========================================================
+   VARIABLES
+========================================================= */
 
 let normoDessinActuel = 0;
 
+let photoInstallationActuelle = 0;
+
 
 /* =========================================================
-   CRÉATION DES 32 IMAGES
+   OUVRIR LA VUE DES 32 DESSINS
+========================================================= */
+
+function ouvrirVueDessins(){
+
+    const vue =
+        document.getElementById(
+            "vue-dessins"
+        );
+
+
+    vue.style.display = "block";
+
+
+    /*
+       Le bouton n'existe visuellement
+       qu'une fois cette vue ouverte.
+    */
+
+    document.getElementById(
+        "melanger-normographe"
+    ).style.display = "block";
+
+
+    /*
+       Création initiale des dessins.
+    */
+
+    creerDessinsNormographe();
+
+}
+
+
+/* =========================================================
+   CRÉER LES 32 DESSINS
 ========================================================= */
 
 function creerDessinsNormographe(){
 
-    const zone =
+    const espace =
         document.getElementById(
-            "zone-dessins"
+            "dessins-espace"
         );
 
 
-    /*
-       On vide la zone avant de reconstruire
-       la composition.
-    */
-
-    zone.innerHTML = "";
+    espace.innerHTML = "";
 
 
     for(let i = 0; i < normoDessins.length; i++){
@@ -2955,16 +2987,13 @@ function creerDessinsNormographe(){
             "Dessin " + (i + 1);
 
 
-        /*
-           Chaque image garde son numéro
-           même après mélange.
-        */
-
-        image.dataset.index = i;
+        image.dataset.index =
+            i;
 
 
         /*
-           Clic = ouverture du dessin.
+           Cliquer sur une unité
+           ouvre le dessin.
         */
 
         image.addEventListener(
@@ -2973,7 +3002,8 @@ function creerDessinsNormographe(){
 
                 event.stopPropagation();
 
-                ouvrirNormoPopup(
+
+                ouvrirNormoDessin(
                     parseInt(
                         this.dataset.index
                     )
@@ -2983,7 +3013,7 @@ function creerDessinsNormographe(){
         );
 
 
-        zone.appendChild(image);
+        espace.appendChild(image);
 
     }
 
@@ -2994,7 +3024,7 @@ function creerDessinsNormographe(){
 
 
 /* =========================================================
-   MÉLANGE DES 32 FORMES
+   MÉLANGER
 ========================================================= */
 
 function melangerNormographe(){
@@ -3006,56 +3036,52 @@ function melangerNormographe(){
 
 
     dessins.forEach(
-        function(image,index){
+        function(image){
 
             /*
-               Position aléatoire.
+               Les dessins occupent
+               toute la fenêtre.
 
-               On garde une marge intérieure
-               pour éviter que les dessins
-               sortent du normographe.
+               On garde une petite marge
+               pour éviter qu'ils soient
+               coupés sur les bords.
             */
 
             const x =
-                Math.random() * 78 + 4;
+                Math.random() * 88 + 2;
 
 
             const y =
-                Math.random() * 76 + 4;
+                Math.random() * 82 + 3;
 
 
             /*
-               Rotation légère.
-
-               On évite les rotations trop fortes
-               pour garder une certaine lisibilité.
+               Rotation.
             */
 
             const rotation =
-                (Math.random() * 16) - 8;
+                Math.random() * 18 - 9;
 
 
             /*
-               Petite variation de taille.
-
-               Entre environ 85% et 115%.
+               Taille variable.
             */
 
             const taille =
-                0.85 +
-                Math.random() * 0.30;
+                0.75 +
+                Math.random() * 0.5;
 
 
             /*
-               Petit déplacement au survol.
+               Petit mouvement au survol.
             */
 
             const dx =
-                (Math.random() * 10) - 5;
+                Math.random() * 10 - 5;
 
 
             const dy =
-                (Math.random() * 10) - 5;
+                Math.random() * 10 - 5;
 
 
             image.style.left =
@@ -3067,7 +3093,7 @@ function melangerNormographe(){
 
 
             image.style.width =
-                taille * 125 + "px";
+                (150 * taille) + "px";
 
 
             image.style.setProperty(
@@ -3077,27 +3103,26 @@ function melangerNormographe(){
 
 
             image.style.setProperty(
-                "--deplacement-x",
+                "--dx",
                 dx + "px"
             );
 
 
             image.style.setProperty(
-                "--deplacement-y",
+                "--dy",
                 dy + "px"
             );
 
 
-            /*
-               Ordre aléatoire.
+            image.style.transform =
+                "rotate(" +
+                rotation +
+                "deg)";
 
-               Certains dessins peuvent donc
-               passer devant les autres.
-            */
 
             image.style.zIndex =
                 Math.floor(
-                    Math.random() * 100
+                    Math.random() * 500
                 );
 
         }
@@ -3107,17 +3132,83 @@ function melangerNormographe(){
 
 
 /* =========================================================
-   OUVRIR UN DESSIN
+   CLIQUER DANS UN ESPACE VIDE
+   → RETOUR AUX NORMOGRAPHES
 ========================================================= */
 
-function ouvrirNormoPopup(index){
+document.getElementById(
+    "vue-dessins"
+).addEventListener(
+    "click",
+    function(event){
+
+        /*
+           Si on clique directement sur
+           la grande zone et pas sur un dessin,
+           on quitte la vue.
+        */
+
+        if(
+            event.target === this ||
+            event.target.id === "dessins-espace"
+        ){
+
+            fermerVueDessins();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   QUITTER LA VUE DES DESSINS
+========================================================= */
+
+function fermerVueDessins(){
+
+    /*
+       Si un popup est ouvert,
+       on ne ferme pas cette vue ici.
+    */
+
+    if(
+        document.getElementById(
+            "normo-dessin-popup"
+        ).style.display === "flex"
+    ){
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        "vue-dessins"
+    ).style.display =
+        "none";
+
+
+    document.getElementById(
+        "melanger-normographe"
+    ).style.display =
+        "none";
+
+}
+
+
+/* =========================================================
+   OUVRIR UN DESSIN EN GRAND
+========================================================= */
+
+function ouvrirNormoDessin(index){
 
     normoDessinActuel =
         index;
 
 
     document.getElementById(
-        "normo-popup-image"
+        "normo-dessin-popup-image"
     ).src =
         normoDessins[
             normoDessinActuel
@@ -3125,14 +3216,14 @@ function ouvrirNormoPopup(index){
 
 
     document.getElementById(
-        "normo-popup-image"
+        "normo-dessin-popup-image"
     ).alt =
         "Dessin " +
         (normoDessinActuel + 1);
 
 
     document.getElementById(
-        "normo-popup-numero"
+        "normo-dessin-numero"
     ).textContent =
         (normoDessinActuel + 1)
         + " / "
@@ -3140,7 +3231,7 @@ function ouvrirNormoPopup(index){
 
 
     document.getElementById(
-        "normo-popup"
+        "normo-dessin-popup"
     ).style.display =
         "flex";
 
@@ -3166,7 +3257,7 @@ function dessinNormoSuivant(){
     }
 
 
-    mettreAJourNormoPopup();
+    mettreAJourNormoDessin();
 
 }
 
@@ -3190,19 +3281,19 @@ function dessinNormoPrecedent(){
     }
 
 
-    mettreAJourNormoPopup();
+    mettreAJourNormoDessin();
 
 }
 
 
 /* =========================================================
-   ACTUALISER POPUP
+   ACTUALISER DESSIN
 ========================================================= */
 
-function mettreAJourNormoPopup(){
+function mettreAJourNormoDessin(){
 
     document.getElementById(
-        "normo-popup-image"
+        "normo-dessin-popup-image"
     ).src =
         normoDessins[
             normoDessinActuel
@@ -3210,7 +3301,7 @@ function mettreAJourNormoPopup(){
 
 
     document.getElementById(
-        "normo-popup-numero"
+        "normo-dessin-numero"
     ).textContent =
         (normoDessinActuel + 1)
         + " / "
@@ -3220,19 +3311,19 @@ function mettreAJourNormoPopup(){
 
 
 /* =========================================================
-   FERMER POPUP DESSIN
+   FERMER DESSIN
 ========================================================= */
 
-function fermerNormoPopup(){
+function fermerNormoDessin(){
 
     document.getElementById(
-        "normo-popup"
+        "normo-dessin-popup"
     ).style.display =
         "none";
 
 
     document.getElementById(
-        "normo-popup-image"
+        "normo-dessin-popup-image"
     ).src =
         "";
 
@@ -3240,32 +3331,25 @@ function fermerNormoPopup(){
 
 
 /* =========================================================
-   MENU PHOTOS D'INSTALLATION
+   MENU INSTALLATION
 ========================================================= */
 
 function ouvrirMenuInstallation(){
 
-    const menu =
-        document.getElementById(
-            "installation-menu"
-        );
+    document.getElementById(
+        "installation-menu"
+    ).style.display =
+        "block";
+
+}
 
 
-    if(
-        menu.style.display === "block"
-    ){
+function fermerMenuInstallation(){
 
-        menu.style.display =
-            "none";
-
-    }
-
-    else{
-
-        menu.style.display =
-            "block";
-
-    }
+    document.getElementById(
+        "installation-menu"
+    ).style.display =
+        "none";
 
 }
 
@@ -3284,11 +3368,8 @@ const photosInstallation = [
 ];
 
 
-let photoInstallationActuelle = 0;
-
-
 /* =========================================================
-   OUVRIR UNE PHOTO
+   OUVRIR PHOTO
 ========================================================= */
 
 function ouvrirPhotoInstallation(index){
@@ -3298,7 +3379,7 @@ function ouvrirPhotoInstallation(index){
 
 
     document.getElementById(
-        "installation-popup-image"
+        "installation-photo-image"
     ).src =
         photosInstallation[
             photoInstallationActuelle
@@ -3306,9 +3387,89 @@ function ouvrirPhotoInstallation(index){
 
 
     document.getElementById(
-        "installation-popup"
+        "installation-photo-numero"
+    ).textContent =
+        (photoInstallationActuelle + 1)
+        + " / "
+        + photosInstallation.length;
+
+
+    document.getElementById(
+        "installation-photo-popup"
     ).style.display =
         "flex";
+
+}
+
+
+/* =========================================================
+   PHOTO SUIVANTE
+========================================================= */
+
+function photoInstallationSuivante(){
+
+    photoInstallationActuelle++;
+
+
+    if(
+        photoInstallationActuelle >=
+        photosInstallation.length
+    ){
+
+        photoInstallationActuelle = 0;
+
+    }
+
+
+    mettreAJourPhotoInstallation();
+
+}
+
+
+/* =========================================================
+   PHOTO PRÉCÉDENTE
+========================================================= */
+
+function photoInstallationPrecedente(){
+
+    photoInstallationActuelle--;
+
+
+    if(
+        photoInstallationActuelle < 0
+    ){
+
+        photoInstallationActuelle =
+            photosInstallation.length - 1;
+
+    }
+
+
+    mettreAJourPhotoInstallation();
+
+}
+
+
+/* =========================================================
+   ACTUALISER PHOTO
+========================================================= */
+
+function mettreAJourPhotoInstallation(){
+
+    document.getElementById(
+        "installation-photo-image"
+    ).src =
+        photosInstallation[
+            photoInstallationActuelle
+        ];
+
+
+    document.getElementById(
+        "installation-photo-numero"
+    ).textContent =
+        (photoInstallationActuelle + 1)
+        + " / "
+        + photosInstallation.length;
 
 }
 
@@ -3320,67 +3481,15 @@ function ouvrirPhotoInstallation(index){
 function fermerPhotoInstallation(){
 
     document.getElementById(
-        "installation-popup"
+        "installation-photo-popup"
     ).style.display =
         "none";
 
 
     document.getElementById(
-        "installation-popup-image"
+        "installation-photo-image"
     ).src =
         "";
-
-}
-
-
-/* =========================================================
-   QUITTER LA VUE
-========================================================= */
-
-function quitterNormographe(){
-
-    document.getElementById(
-        "normographe-vue"
-    ).style.display =
-        "none";
-
-
-    document.getElementById(
-        "melanger-normographe"
-    ).style.display =
-        "none";
-
-
-    document.getElementById(
-        "rouvrir-normographe"
-    ).style.display =
-        "block";
-
-}
-
-
-/* =========================================================
-   RÉOUVRIR LA VUE
-========================================================= */
-
-function rouvrirNormographe(){
-
-    document.getElementById(
-        "normographe-vue"
-    ).style.display =
-        "block";
-
-
-    document.getElementById(
-        "melanger-normographe"
-    ).style.display =
-        "block";
-
-
-    document.getElementById(
-        "rouvrir-normographe"
-    ).style.display =
-        "none";
 
 }
 
@@ -3393,24 +3502,27 @@ document.addEventListener(
     "keydown",
     function(event){
 
-
         /*
-           Si le popup d'un dessin est ouvert
+           ================================
+           POPUP DESSIN
+           ================================
         */
 
-        const popupDessin =
+        const dessinPopupOuvert =
             document.getElementById(
-                "normo-popup"
+                "normo-dessin-popup"
             ).style.display === "flex";
 
 
-        if(popupDessin){
+        if(dessinPopupOuvert){
 
             if(
                 event.key === "ArrowRight"
             ){
 
                 dessinNormoSuivant();
+
+                event.preventDefault();
 
             }
 
@@ -3421,6 +3533,8 @@ document.addEventListener(
 
                 dessinNormoPrecedent();
 
+                event.preventDefault();
+
             }
 
 
@@ -3428,42 +3542,128 @@ document.addEventListener(
                 event.key === "Escape"
             ){
 
-                fermerNormoPopup();
+                fermerNormoDessin();
+
+                event.preventDefault();
 
             }
+
+
+            return;
 
         }
 
 
         /*
-           Si une photo d'installation
-           est ouverte
+           ================================
+           POPUP PHOTO
+           ================================
         */
 
-        const popupPhoto =
+        const photoPopupOuvert =
             document.getElementById(
-                "installation-popup"
+                "installation-photo-popup"
             ).style.display === "flex";
 
 
-        if(
-            popupPhoto &&
-            event.key === "Escape"
-        ){
+        if(photoPopupOuvert){
 
-            fermerPhotoInstallation();
+            if(
+                event.key === "ArrowRight"
+            ){
+
+                photoInstallationSuivante();
+
+                event.preventDefault();
+
+            }
+
+
+            if(
+                event.key === "ArrowLeft"
+            ){
+
+                photoInstallationPrecedente();
+
+                event.preventDefault();
+
+            }
+
+
+            if(
+                event.key === "Escape"
+            ){
+
+                fermerPhotoInstallation();
+
+                event.preventDefault();
+
+            }
+
+
+            return;
+
+        }
+
+
+        /*
+           ================================
+           MENU INSTALLATION
+           ================================
+        */
+
+        const menuOuvert =
+            document.getElementById(
+                "installation-menu"
+            ).style.display === "block";
+
+
+        if(menuOuvert){
+
+            if(
+                event.key === "Escape"
+            ){
+
+                fermerMenuInstallation();
+
+                event.preventDefault();
+
+            }
+
+
+            return;
+
+        }
+
+
+        /*
+           ================================
+           VUE DES DESSINS
+           ================================
+        */
+
+        const vueDessinsOuverte =
+            document.getElementById(
+                "vue-dessins"
+            ).style.display === "block";
+
+
+        if(vueDessinsOuverte){
+
+            if(
+                event.key === "Escape"
+            ){
+
+                fermerVueDessins();
+
+                event.preventDefault();
+
+            }
 
         }
 
     }
 );
-
-
-/* =========================================================
-   INITIALISATION
-========================================================= */
-
-creerDessinsNormographe();
 
 </script>
 
